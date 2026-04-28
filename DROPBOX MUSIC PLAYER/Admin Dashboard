@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Admin Dashboard</title>
+<link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+
+<h1>Admin Panel</h1>
+
+<h2>Pending Sellers</h2>
+<div class="card">
+  <p>Seller: John Doe</p>
+  <button>Approve</button>
+  <button>Reject</button>
+</div>
+
+<h2>Platform Stats</h2>
+<p>Total Sales: R120,000</p>
+<p>Commission Earned: R12,000</p>
+
+</body>
+</html>

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Register - OneMart</title>
+<link rel="stylesheet" href="../styles.css">
+</head>
+<body class="auth">
+
+<div class="auth-box">
+  <h2>Create Account</h2>
+  <input placeholder="Name">
+  <input placeholder="Email">
+  <input type="password" placeholder="Password">
+  <select>
+    <option>Buyer</option>
+    <option>Seller</option>
+  </select>
+  <p>Already have an account? <a href="login.html">Login</a></p>
+  <button>Register</button>
+</div>
+
+</body>
+</html>

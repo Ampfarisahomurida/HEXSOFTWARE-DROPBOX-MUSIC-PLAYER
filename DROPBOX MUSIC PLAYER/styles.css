@@ -1,0 +1,187 @@
+body {
+  margin: 0;
+  font-family: Arial;
+  background: lightblue;
+}
+
+h1 {
+  color: white;
+ text-align: center;
+}
+
+p {
+  font-family: verdana;
+  font-size: 20px;
+}
+  
+
+/* NAVBAR */
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  padding: 15px;
+  background: #0a2540;
+  color: white;
+}
+
+.topbar input {
+  width: 40%;
+  padding: 10px;
+}
+
+/* CATEGORY BAR */
+.categories {
+  display: flex;
+  gap: 20px;
+  padding: 10px;
+  background: white;
+}
+
+/* HERO */
+.hero {
+  text-align: center;
+  padding: 80px;
+  background: linear-gradient(135deg, #1a73e8, #00c6ff);
+  color: white;
+}
+
+.hero-buttons button {
+  margin: 10px;
+  padding: 12px 25px;
+}
+
+/* STATS */
+.stats {
+  display: flex;
+  justify-content: space-around;
+  padding: 40px;
+  background: white;
+}
+
+.stats div {
+  font-size: 24px;
+}
+
+/* FEATURES */
+.features {
+  display: flex;
+  justify-content: space-around;
+  padding: 20px;
+}
+
+/* PRODUCT CARD UPGRADE */
+.product {
+  position: relative;
+  background: white;
+  padding: 15px;
+  border-radius: 12px;
+  transition: 0.3s;
+}
+
+.product:hover {
+  transform: translateY(-5px);
+}
+
+.badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: red;
+  color: white;
+  padding: 5px;
+  font-size: 12px;
+}
+
+.price-old {
+  text-decoration: line-through;
+  color: gray;
+  font-size: 14px;
+}
+
+.rating {
+  color: orange;
+  font-size: 14px;
+}
+
+/* NEW ARRIVALS */
+.section {
+  padding: 40px 20px;
+}
+
+.section h2 {
+  margin-bottom: 20px;
+}
+
+/* NEWSLETTER */
+.newsletter {
+  text-align: center;
+  padding: 60px;
+  background: #eef2f7;
+}
+
+.newsletter input {
+  padding: 10px;
+  width: 250px;
+}
+
+/* FOOTER */
+footer {
+  background: #0a2540;
+  color: white;
+  padding: 40px;
+}
+
+.footer-grid {
+  display: flex;
+  justify-content: space-between;
+}
+
+.footer-grid div {
+  max-width: 200px;
+}
+
+.auth {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.auth-box {
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  width: 300px;
+}
+
+.auth-box input, select {
+  width: 100%;
+  margin: 10px 0;
+  padding: 10px;
+}
+
+.auth {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.auth-box {
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  width: 300px;
+}
+
+.auth-box input, select {
+  width: 100%;
+  margin: 10px 0;
+  padding: 10px;
+}
+div {
+  
+
+
+  margin: 20px;
+}

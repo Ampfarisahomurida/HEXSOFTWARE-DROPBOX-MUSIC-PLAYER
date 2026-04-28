@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Seller Dashboard</title>
+<link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+
+<h1>Seller Dashboard</h1>
+
+<input placeholder="Product Name">
+<input placeholder="Price">
+<button>Add Product</button>
+
+<h2>Your Products</h2>
+<div id="seller-products"></div>
+
+</body>
+</html>

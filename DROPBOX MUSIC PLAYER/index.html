@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+<style>
+/* FOOTER */
+footer {
+  background:#111; color:#aaa; padding:40px;
+}
+.footer-grid {
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:20px;
+}
+.footer-grid h4 { color:white; margin-bottom:10px; }
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<div class="navbar">
+  <div class="logo">OneMart</div>
+  <div class="search-box">
+    <input type="text" placeholder="Search anything...">
+  </div>
+  <div class="nav-actions">
+    <span>Account</span>
+    <span>Sell</span>
+  </div>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-text">
+    <h1>Discover Amazing Deals</h1>
+    <p>Your one-stop marketplace for everything</p>
+    <div class="hero-buttons">
+      <button class="primary">Shop Now</button>
+      <button class="secondary">Start Selling</button>
+    </div>
+  </div>
+</section>
+
+<!-- CATEGORIES -->
+<div class="categories">
+  <span>Electronics</span>
+  <span>Fashion</span>
+  <span>Home</span>
+  <span>Beauty</span>
+  <span>Sports</span>
+  <span>Books</span>
+</div>
+
+<!-- PRODUCTS -->
+<section class="section">
+  <h2>🔥 Trending Products</h2>
+  <div class="product-grid">
+    <div class="card">
+      <img src="https://via.placeholder.com/200">
+      <h4>Product Name</h4>
+      <p>R299</p>
+      <button>Add to Cart</button>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta">
+  <h2>Become a Seller on OneMart</h2>
+  <p>Grow your business with us</p>
+  <button>Register Now</button>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div>
+      <h4>OneMart</h4>
+      <p>Modern marketplace platform</p>
+    </div>
+    <div>
+      <h4>Company</h4>
+      <p>About</p>
+      <p>Careers</p>
+    </div>
+    <div>
+      <h4>Support</h4>
+      <p>Help Center</p>
+      <p>Contact</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+const products = [
+  { name: "Samsung Galaxy A54", price: 7999, oldPrice: 9999, discount: "-20%", rating: 1204, seller: "TechHub SA", image: "https://via.placeholder.com/200" },
+  { name: "Nike Air Max 270", price: 2199, oldPrice: 2799, discount: "-21%", rating: 876, seller: "SportZone", image: "https://via.placeholder.com/200" },
+  { name: "LG 55 4K TV", price: 12999, oldPrice: 17999, discount: "-30%", rating: 432, seller: "ElectroPlus", image: "https://via.placeholder.com/200" },
+  { name: "L'Oréal Serum", price: 349, oldPrice: 499, discount: "-30%", rating: 567, seller: "BeautyWorld SA", image: "https://via.placeholder.com/200" }
+];
+
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+function saveCart() {
+  localStorage.setItem("cart", JSON.stringify(cart));
+  updateCartUI();
+}
+
+function addToCart(productName) {
+  const product = products.find(p => p.name === productName);
+  const existing = cart.find(item => item.name === productName);
+
+  if (existing) {
+    existing.qty++;
+  } else {
+    cart.push({ ...product, qty: 1 });
+  }
+
+  saveCart();
+}
+
+function removeFromCart(name) {
+  cart = cart.filter(item => item.name !== name);
+  saveCart();
+}
+
+function changeQty(name, amount) {
+  const item = cart.find(i => i.name === name);
+  if (!item) return;
+
+  item.qty += amount;
+  if (item.qty <= 0) {
+    removeFromCart(name);
+  }
+  saveCart();
+}
+
+function getTotal() {
+  return cart.reduce((total, item) => total + item.price * item.qty, 0);
+}
+
+function updateCartUI() {
+  let cartBox = document.getElementById("cart-box");
+
+  if (!cartBox) {
+    cartBox = document.createElement("div");
+    cartBox.id = "cart-box";
+    cartBox.style.position = "fixed";
+    cartBox.style.right = "20px";
+    cartBox.style.top = "80px";
+    cartBox.style.width = "300px";
+    cartBox.style.background = "#fff";
+    cartBox.style.boxShadow = "0 10px 30px rgba(0,0,0,0.1)";
+    cartBox.style.borderRadius = "15px";
+    cartBox.style.padding = "15px";
+    cartBox.style.zIndex = "1000";
+    document.body.appendChild(cartBox);
+  }
+
+  cartBox.innerHTML = `<h3>🛒 Cart (${cart.length})</h3>`;
+
+  if (cart.length === 0) {
+    cartBox.innerHTML += "<p>Your cart is empty</p>";
+    return;
+  }
+
+  cart.forEach(item => {
+    cartBox.innerHTML += `
+      <div style="margin-bottom:10px;border-bottom:1px solid #eee;padding-bottom:10px;">
+        <strong>${item.name}</strong><br>
+        R${item.price} x ${item.qty}<br>
+        <button onclick="changeQty('${item.name}',1)">+</button>
+        <button onclick="changeQty('${item.name}',-1)">-</button>
+        <button onclick="removeFromCart('${item.name}')">Remove</button>
+      </div>
+    `;
+  });
+
+  cartBox.innerHTML += `
+    <h4>Total: R${getTotal()}</h4>
+    <button onclick="checkout()" style="width:100%;padding:10px;background:#2563eb;color:#fff;border:none;border-radius:10px;">Checkout</button>
+  `;
+}
+
+function checkout() {
+  alert("Checkout coming soon 🚀 Total: R" + getTotal());
+}
+
+function renderProducts(list, containerId) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  container.innerHTML = "";
+
+  list.forEach(p => {
+    const discountPercent = Math.round(((p.oldPrice - p.price) / p.oldPrice) * 100);
+
+    container.innerHTML += `
+      <div class="card">
+        <div style="position:relative;">
+          <img src="${p.image}" alt="${p.name}">
+          <span style="position:absolute;top:10px;left:10px;background:#ef4444;color:#fff;padding:5px 10px;border-radius:20px;font-size:12px;">
+            -${discountPercent}%
+          </span>
+        </div>
+        <h4>${p.name}</h4>
+        <p style="color:#f59e0b;">⭐ ${p.rating}</p>
+        <p style="font-size:12px;color:#777;">Sold by ${p.seller}</p>
+        <p>
+          <strong>R${p.price}</strong>
+          <span style="text-decoration:line-through;color:#999;font-size:12px;">R${p.oldPrice}</span>
+        </p>
+        <button onclick="addToCart('${p.name}')">Add to Cart</button>
+      </div>
+    `;
+  });
+}
+
+renderProducts(products, "products");
+updateCartUI();
+</script>
+<!-- CHECKOUT MODAL -->
+<div id="checkout-modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);z-index:2000;justify-content:center;align-items:center;">
+  <div style="background:#fff;padding:30px;border-radius:15px;width:400px;max-width:90%;">
+    <h2>Checkout</h2>
+    <input id="name" placeholder="Full Name" style="width:100%;margin:5px 0;padding:10px;">
+    <input id="phone" placeholder="Phone Number" style="width:100%;margin:5px 0;padding:10px;">
+    <input id="address" placeholder="Delivery Address" style="width:100%;margin:5px 0;padding:10px;">
+
+    <div id="order-summary" style="margin-top:15px;"></div>
+
+    <h3 id="checkout-total"></h3>
+
+    <button onclick="placeOrder()" style="width:100%;padding:12px;background:#16a34a;color:#fff;border:none;border-radius:10px;margin-top:10px;">Place Order</button>
+    <button onclick="closeCheckout()" style="width:100%;padding:10px;margin-top:10px;">Cancel</button>
+  </div>
+</div>
+
+<script>
+function checkout() {
+  const modal = document.getElementById("checkout-modal");
+  const summary = document.getElementById("order-summary");
+  const totalBox = document.getElementById("checkout-total");
+
+  summary.innerHTML = "";
+
+  cart.forEach(item => {
+    summary.innerHTML += `<p>${item.name} x ${item.qty} = R${item.price * item.qty}</p>`;
+  });
+
+  totalBox.innerText = "Total: R" + getTotal();
+
+  modal.style.display = "flex";
+}
+
+function closeCheckout() {
+  document.getElementById("checkout-modal").style.display = "none";
+}
+
+function placeOrder() {
+  const name = document.getElementById("name").value;
+  const phone = document.getElementById("phone").value;
+  const address = document.getElementById("address").value;
+
+  if (!name || !phone || !address) {
+    alert("Please fill all fields");
+    return;
+  }
+
+  const order = {
+    customer: { name, phone, address },
+    items: cart,
+    total: getTotal(),
+    date: new Date().toLocaleString()
+  };
+
+  console.log("Order Placed:", order);
+
+  alert("Order placed successfully! 🎉
+Total: R" + order.total);
+
+  cart = [];
+  saveCart();
+  closeCheckout();
+}
+</script>
+</body>
+</html>
