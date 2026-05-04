@@ -40,7 +40,7 @@ img {
     align-items: center;
     justify-content: space-between;
     padding: 1rem 2rem;
-    background: #030303;
+    background: #000;
     border-bottom: 2px solid #ff0000;
     position: sticky;
     top: 0;
@@ -198,7 +198,7 @@ img {
 
 .sidebar {
     width: 290px;
-    background: rgba(15, 15, 15, 0.96);
+    background: rgba(0, 0, 0, 0.96);
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 24px;
     padding: 1.75rem 1.25rem;
@@ -948,7 +948,7 @@ img {
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    background: rgba(20, 20, 20, 0.95);
+    background: rgba(0, 0, 0, 0.95);
     border: 1px solid rgba(255, 255, 255, 0.08);
     padding: 1rem 1.1rem;
     border-radius: 18px;
@@ -956,7 +956,7 @@ img {
 }
 
 .notification.success i {
-    color: #00ff6a;
+    color: #fff;
 }
 
 .notification.error i {
@@ -964,7 +964,7 @@ img {
 }
 
 .notification.info i {
-    color: #63b1ff;
+    color: #fff;
 }
 
 .notification-close {
