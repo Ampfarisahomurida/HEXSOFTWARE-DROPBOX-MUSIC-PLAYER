@@ -659,11 +659,9 @@ app.get('/api-docs', (req, res) => {
 // SERVE STATIC FILES (Frontend)
 // ==========================================
 
-app.use(express.static(path.join(__dirname)));
-
 // Catch-all handler: send back index.html for any non-API routes
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 // ==========================================
