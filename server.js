@@ -10,6 +10,7 @@ const jwt = require('jsonwebtoken');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const path = require('path');
+const fs = require('fs');
 
 // Load environment variables
 dotenv.config();
@@ -671,7 +672,17 @@ app.get('/api-docs', (req, res) => {
 
 // Catch-all handler: send back index.html for any non-API routes
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  const publicIndexPath = path.join(__dirname, 'public', 'index.html');
+  const rootIndexPath = path.join(__dirname, 'index.html');
+  
+  // Try public/index.html first, fallback to index.html in root
+  if (fs.existsSync(publicIndexPath)) {
+    res.sendFile(publicIndexPath);
+  } else if (fs.existsSync(rootIndexPath)) {
+    res.sendFile(rootIndexPath);
+  } else {
+    res.status(404).send('Index file not found');
+  }
 });
 
 // ==========================================
