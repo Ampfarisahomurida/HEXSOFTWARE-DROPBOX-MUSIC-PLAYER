@@ -55,18 +55,21 @@ app.use(limiter);
 // DATABASE CONNECTION
 // ==========================================
 const mongoURI = process.env.MONGODB_URI || 'mongodb://localhost:27017/dropbox-music';
+let dbConnected = false;
 
 mongoose.connect(mongoURI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
+  serverSelectionTimeoutMS: 5000,
+  connectTimeoutMS: 10000,
 })
 .then(() => {
   console.log('✅ MongoDB Connected');
-  startServer();
+  dbConnected = true;
 })
 .catch(err => {
-  console.error('❌ MongoDB Error:', err);
-  process.exit(1);
+  console.error('⚠️  MongoDB Connection Error:', err.message);
+  console.log('ℹ️  Server will continue without database. Configure MONGODB_URI for persistence.');
 });
 
 // ==========================================
@@ -680,13 +683,22 @@ app.use((err, req, res, next) => {
 // ==========================================
 
 const PORT = process.env.PORT || 5000;
+
 const startServer = () => {
   app.listen(PORT, () => {
     console.log(`\n🎵 DROPBOX MUSIC PLAYER Backend Server`);
     console.log(`✅ Server running on http://localhost:${PORT}`);
     console.log(`📚 API Documentation: http://localhost:${PORT}/api-docs`);
     console.log(`🔗 Health Check: http://localhost:${PORT}/api/health\n`);
+  }).on('error', (err) => {
+    console.error('❌ Server startup error:', err);
+    process.exit(1);
   });
 };
+
+// Start the server if not in test mode
+if (require.main === module) {
+  startServer();
+}
 
 module.exports = app;
