@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Artist Hub - DROPBOX MUSIC PLAYER</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="logo" onclick="window.location.href='index.html'">
+            <i class='bx bx-music'></i>
+            DROPBOX MUSIC PLAYER
+        </div>
+        <div class="search-bar">
+            <input type="text" placeholder="Search..." id="searchInput">
+            <button><i class='bx bx-search'></i></button>
+        </div>
+        <div class="user-actions">
+            <button class="login-btn" onclick="window.location.href='login.html'">Login</button>
+            <button class="register-btn" onclick="window.location.href='register.html'">Register</button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <nav class="nav-menu">
+                <a href="index.html" class="nav-item"><i class='bx bx-home'></i> Home</a>
+                <a href="discover.html" class="nav-item"><i class='bx bx-search'></i> Discover</a>
+                <a href="playlists.html" class="nav-item"><i class='bx bx-list-ul'></i> Playlists</a>
+                <a href="artist-profile.html" class="nav-item active"><i class='bx bx-user'></i> Artist Hub</a>
+                <a href="user-profile.html" class="nav-item"><i class='bx bx-user-circle'></i> Profile</a>
+                <a href="settings.html" class="nav-item"><i class='bx bx-cog'></i> Settings</a>
+            </nav>
+        </aside>
+
+        <!-- Content Area -->
+        <section class="content">
+            <!-- Artist Dashboard Tabs -->
+            <div class="tabs">
+                <button class="tab-btn active" onclick="switchTab('overview')">Overview</button>
+                <button class="tab-btn" onclick="switchTab('uploads')">My Uploads</button>
+                <button class="tab-btn" onclick="switchTab('analytics')">Analytics</button>
+                <button class="tab-btn" onclick="switchTab('earnings')">Earnings</button>
+            </div>
+
+            <!-- Overview Tab -->
+            <div class="tab-content active" id="overview-content">
+                <div class="artist-stats">
+                    <div class="stat-card">
+                        <i class='bx bx-music'></i>
+                        <h3>12</h3>
+                        <p>Songs Uploaded</p>
+                    </div>
+                    <div class="stat-card">
+                        <i class='bx bx-headphone'></i>
+                        <h3>145.8K</h3>
+                        <p>Total Streams</p>
+                    </div>
+                    <div class="stat-card">
+                        <i class='bx bx-heart'></i>
+                        <h3>3,245</h3>
+                        <p>Likes</p>
+                    </div>
+                    <div class="stat-card">
+                        <i class='bx bx-user'></i>
+                        <h3>8,932</h3>
+                        <p>Followers</p>
+                    </div>
+                </div>
+
+                <div class="artist-profile-info">
+                    <h2>Your Artist Profile</h2>
+                    <div class="profile-form">
+                        <div class="form-group">
+                            <label>Artist Name</label>
+                            <input type="text" value="Your Artist Name" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label>Bio</label>
+                            <textarea rows="4" placeholder="Write about yourself...">Your bio here</textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Profile Picture</label>
+                            <input type="file" accept="image/*">
+                        </div>
+                        <button class="submit-btn">Update Profile</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Uploads Tab -->
+            <div class="tab-content" id="uploads-content">
+                <div class="upload-section">
+                    <h2>Upload New Music</h2>
+                    <div class="upload-area">
+                        <input type="file" id="musicFile" accept="audio/*" multiple>
+                        <i class='bx bx-cloud-upload'></i>
+                        <h3>Drag files here or click to browse</h3>
+                        <p>Supported formats: MP3, WAV, FLAC</p>
+                    </div>
+                </div>
+
+                <h2>Your Songs</h2>
+                <div class="song-list">
+                    <div class="song-item">
+                        <div class="song-info">
+                            <span class="song-title">Song Title 1</span>
+                            <span class="song-artist">Your Artist Name</span>
+                        </div>
+                        <div class="song-stats">
+                            <span>1,234 plays</span>
+                            <span>89 likes</span>
+                        </div>
+                        <div class="song-actions">
+                            <button title="Edit"><i class='bx bx-edit'></i></button>
+                            <button title="Delete"><i class='bx bx-trash'></i></button>
+                        </div>
+                    </div>
+                    <div class="song-item">
+                        <div class="song-info">
+                            <span class="song-title">Song Title 2</span>
+                            <span class="song-artist">Your Artist Name</span>
+                        </div>
+                        <div class="song-stats">
+                            <span>2,156 plays</span>
+                            <span>143 likes</span>
+                        </div>
+                        <div class="song-actions">
+                            <button title="Edit"><i class='bx bx-edit'></i></button>
+                            <button title="Delete"><i class='bx bx-trash'></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analytics Tab -->
+            <div class="tab-content" id="analytics-content">
+                <h2>Analytics Dashboard</h2>
+                <div class="analytics-grid">
+                    <div class="chart-card">
+                        <h3>Streams Over Time</h3>
+                        <p style="text-align: center; padding: 2rem; color: #aaa;">Chart visualization would go here</p>
+                    </div>
+                    <div class="chart-card">
+                        <h3>Top Songs</h3>
+                        <ul style="padding: 1rem;">
+                            <li>Song 1 - 12,345 streams</li>
+                            <li>Song 2 - 9,876 streams</li>
+                            <li>Song 3 - 8,234 streams</li>
+                        </ul>
+                    </div>
+                    <div class="chart-card">
+                        <h3>Listener Demographics</h3>
+                        <p style="text-align: center; padding: 2rem; color: #aaa;">Demographics chart would go here</p>
+                    </div>
+                    <div class="chart-card">
+                        <h3>Geographic Data</h3>
+                        <p style="text-align: center; padding: 2rem; color: #aaa;">Map visualization would go here</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Earnings Tab -->
+            <div class="tab-content" id="earnings-content">
+                <h2>Earnings & Payouts</h2>
+                <div class="earnings-cards">
+                    <div class="earning-card">
+                        <h3>Current Balance</h3>
+                        <p class="amount">$1,245.67</p>
+                        <button>Request Payout</button>
+                    </div>
+                    <div class="earning-card">
+                        <h3>This Month</h3>
+                        <p class="amount">$342.50</p>
+                    </div>
+                    <div class="earning-card">
+                        <h3>Total Earnings</h3>
+                        <p class="amount">$5,678.90</p>
+                    </div>
+                    <div class="earning-card">
+                        <h3>Next Payout</h3>
+                        <p>May 5, 2025</p>
+                    </div>
+                </div>
+
+                <h3 style="margin-top: 2rem;">Recent Transactions</h3>
+                <table class="transactions-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Source</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>2025-04-20</td>
+                            <td>Song Streams</td>
+                            <td>$234.50</td>
+                            <td><span class="status pending">Pending</span></td>
+                        </tr>
+                        <tr>
+                            <td>2025-03-20</td>
+                            <td>Song Streams</td>
+                            <td>$189.30</td>
+                            <td><span class="status completed">Completed</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <!-- Music Player -->
+    <div class="music-player">
+        <div class="player-controls">
+            <button class="prev-btn"><i class='bx bx-skip-previous'></i></button>
+            <button class="play-pause-btn" id="playPauseBtn"><i class='bx bx-play'></i></button>
+            <button class="next-btn"><i class='bx bx-skip-next'></i></button>
+        </div>
+        <div class="progress-bar">
+            <div class="progress" id="progress"></div>
+            <div class="time-display">
+                <span id="currentTime">0:00</span>
+                <span id="totalTime">0:00</span>
+            </div>
+        </div>
+        <div class="song-info">
+            <img src="https://via.placeholder.com/50x50/333/fff?text=Now+Playing" alt="Song" id="currentSongImg">
+            <div class="song-details">
+                <h4 id="currentSongTitle">No song playing</h4>
+                <p id="currentSongArtist">Artist</p>
+            </div>
+        </div>
+        <div class="volume-control">
+            <i class='bx bx-volume-full'></i>
+            <input type="range" min="0" max="1" step="0.1" value="0.5" id="volumeSlider">
+        </div>
+    </div>
+
+    <audio id="audioPlayer" preload="metadata"></audio>
+
+    <script src="app.js"></script>
+    <script>
+        function switchTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Show selected tab
+            document.getElementById(tabName + '-content').classList.add('active');
+            event.target.classList.add('active');
+        }
+    </script>
+</body>
+</html>
