@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: dropbox-music-player
+    env: node
+    plan: starter
+    region: oregon
+    branch: main
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: JWT_SECRET
+        scope: secret
+      - key: MONGODB_URI
+        scope: secret

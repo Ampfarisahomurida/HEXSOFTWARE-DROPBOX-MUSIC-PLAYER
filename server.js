@@ -25,18 +25,28 @@ app.use(helmet());
 app.disable('x-powered-by');
 
 const allowedOrigins = [
-  process.env.FRONTEND_URL || 'http://localhost:8000',
+  process.env.FRONTEND_URL,
+  process.env.CORS_ORIGIN,
+  'http://localhost:8000',
   'http://localhost:3000',
   'http://localhost:5000',
   'http://127.0.0.1:5000'
-];
+].filter(Boolean);
 app.use(cors({
   origin: function(origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('CORS policy: Origin not allowed'));
+    if (!origin) {
+      return callback(null, true);
     }
+
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+
+    if (process.env.NODE_ENV !== 'production' && origin.includes('localhost')) {
+      return callback(null, true);
+    }
+
+    return callback(new Error('CORS policy: Origin not allowed'));
   },
   credentials: true
 }));
