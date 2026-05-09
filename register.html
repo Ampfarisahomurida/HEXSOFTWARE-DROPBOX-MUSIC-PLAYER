@@ -35,8 +35,7 @@
                 </div>
                 <div class="input-group">
                     <i class='bx bx-user-circle'></i>
-                    <label for="accountType" style="display:none;">Account Type</label>
-                    <select id="accountType" required>
+                    <select required>
                         <option value="">Select Account Type</option>
                         <option value="listener">Listener</option>
                         <option value="artist">Artist</option>
@@ -50,7 +49,7 @@
                 </div>
                 <button type="submit" class="auth-btn">Create Account</button>
             </form>
-            <p class="auth-switch">Already have an account? <a href="login.html">Login</a></p>
+            <p class="auth-switch">Already have an account? <a href="login">Login</a></p>
             <div class="social-login">
                 <p>Or register with</p>
                 <div class="social-buttons">
@@ -68,51 +67,25 @@
     </div>
 
     <script>
-        const API_BASE = window.location.hostname === 'localhost' ? 'http://localhost:5000/api' : '/api';
-
-        document.querySelector('.auth-form').addEventListener('submit', async function(e) {
+        // Simple form validation
+        document.querySelector('.auth-form').addEventListener('submit', function(e) {
             e.preventDefault();
-            const name = this.querySelector('input[type="text"]').value.trim();
-            const email = this.querySelector('input[type="email"]').value.trim();
-            const password = this.querySelector('input[type="password"]').value.trim();
-            const confirmPassword = this.querySelectorAll('input[type="password"]')[1].value.trim();
+            const name = this.querySelector('input[type="text"]').value;
+            const email = this.querySelector('input[type="email"]').value;
+            const password = this.querySelector('input[type="password"]').value;
+            const confirmPassword = this.querySelectorAll('input[type="password"]')[1].value;
             const accountType = this.querySelector('select').value;
             const agreeTerms = this.querySelector('input[type="checkbox"]').checked;
 
-            if (!name || !email || !password || !confirmPassword || !accountType || !agreeTerms) {
-                alert('Please fill in all fields and agree to the terms');
-                return;
-            }
-
-            if (password !== confirmPassword) {
-                alert('Passwords do not match');
-                return;
-            }
-
-            try {
-                const response = await fetch(`${API_BASE}/auth/register`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        username: name,
-                        email,
-                        password,
-                        accountType
-                    })
-                });
-
-                const data = await response.json();
-                if (!response.ok) {
-                    throw new Error(data.message || 'Registration failed');
+            if (name && email && password && confirmPassword && accountType && agreeTerms) {
+                if (password !== confirmPassword) {
+                    alert('Passwords do not match');
+                    return;
                 }
-
-                localStorage.setItem('authToken', data.token);
-                localStorage.setItem('currentUser', JSON.stringify(data.user));
-                window.location.href = 'index.html';
-            } catch (error) {
-                alert(error.message || 'Unable to register at this time');
+                alert('Registration functionality would connect to backend here');
+                // In a real app, this would send a request to the server
+            } else {
+                alert('Please fill in all fields and agree to terms');
             }
         });
     </script>

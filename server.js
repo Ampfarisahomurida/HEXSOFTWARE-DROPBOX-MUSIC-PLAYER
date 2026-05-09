@@ -1,811 +1,411 @@
-// DROPBOX MUSIC PLAYER - Backend Server
-// Node.js + Express + MongoDB
-
 const express = require('express');
-const mongoose = require('mongoose');
-const cors = require('cors');
-const dotenv = require('dotenv');
-const bcryptjs = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const helmet = require('helmet');
-const rateLimit = require('express-rate-limit');
 const path = require('path');
-const fs = require('fs');
+const fs = require('fs/promises');
+const cors = require('cors');
+const helmet = require('helmet');
 const multer = require('multer');
-
-// Load environment variables
-dotenv.config();
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
 
 const app = express();
+const PORT = process.env.PORT || 5000;
+const DATA_FILE = path.join(__dirname, 'data.json');
+const UPLOADS_DIR = path.join(__dirname, 'uploads');
+const JWT_SECRET = process.env.JWT_SECRET || 'dropbox-music-secret';
+const SUPPORTED_FORMATS = ['audio/mpeg', 'audio/wav', 'audio/flac', 'audio/m4a', 'audio/aac'];
+const MAX_UPLOAD_SIZE = 50 * 1024 * 1024;
 
-if (process.env.NODE_ENV === 'production') {
-  app.set('trust proxy', 1);
-}
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, UPLOADS_DIR),
+  filename: (req, file, cb) => {
+    const safeName = file.originalname.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_.-]/g, '');
+    cb(null, `${Date.now()}-${safeName}`);
+  }
+});
 
-// Security & Middleware
+const upload = multer({
+  storage,
+  limits: { fileSize: MAX_UPLOAD_SIZE },
+  fileFilter: (req, file, cb) => {
+    if (SUPPORTED_FORMATS.includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(new Error('Unsupported audio format')); 
+    }
+  }
+});
+
 app.use(helmet());
-app.disable('x-powered-by');
-
-const allowedOrigins = [
-  process.env.FRONTEND_URL,
-  process.env.CORS_ORIGIN,
-  'http://localhost:8000',
-  'http://localhost:3000',
-  'http://localhost:5000',
-  'http://127.0.0.1:5000'
-].filter(Boolean);
-app.use(cors({
-  origin: function(origin, callback) {
-    if (!origin) {
-      return callback(null, true);
-    }
-
-    if (allowedOrigins.includes(origin)) {
-      return callback(null, true);
-    }
-
-    if (process.env.NODE_ENV !== 'production' && origin.includes('localhost')) {
-      return callback(null, true);
-    }
-
-    return callback(new Error('CORS policy: Origin not allowed'));
-  },
-  credentials: true
-}));
+app.use(cors());
 app.use(express.json({ limit: '50mb' }));
-app.use(express.urlencoded({ limit: '50mb', extended: true }));
+app.use(express.urlencoded({ extended: true, limit: '50mb' }));
+app.use('/uploads', express.static(UPLOADS_DIR));
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Rate limiting
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100 // limit each IP to 100 requests per windowMs
-});
-app.use(limiter);
-
-// ==========================================
-// FILE UPLOAD SETUP
-// ==========================================
-
-// Create uploads directory if it doesn't exist
-const uploadsDir = path.join(__dirname, 'uploads', 'music');
-const coversDir = path.join(__dirname, 'uploads', 'covers');
-
-if (!fs.existsSync(uploadsDir)) {
-  fs.mkdirSync(uploadsDir, { recursive: true });
+function createId() {
+  return crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(16).slice(2)}`;
 }
 
-if (!fs.existsSync(coversDir)) {
-  fs.mkdirSync(coversDir, { recursive: true });
+async function ensureDataFile() {
+  try {
+    await fs.access(DATA_FILE);
+  } catch (err) {
+    const defaultData = {
+      users: [
+        {
+          _id: createId(),
+          username: 'demoartist',
+          email: 'artist@dropboxmusic.com',
+          passwordHash: await bcrypt.hash('Password123!', 10),
+          accountType: 'artist',
+          profileImage: 'https://via.placeholder.com/150x150/111/ff0a0a?text=Artist',
+          followers: 3240,
+          createdAt: new Date().toISOString()
+        }
+      ],
+      songs: [
+        {
+          _id: createId(),
+          title: 'Electric Horizon',
+          artist: 'Nova Star',
+          artistId: 'artist-1',
+          duration: 212,
+          audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
+          coverUrl: 'https://via.placeholder.com/300x300/111/ff0000?text=Electric+Horizon',
+          streams: 12894,
+          status: 'approved',
+          genre: 'Electronic',
+          uploadedAt: new Date().toISOString()
+        },
+        {
+          _id: createId(),
+          title: 'Midnight Drive',
+          artist: 'Luna Beats',
+          artistId: 'artist-2',
+          duration: 245,
+          audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',
+          coverUrl: 'https://via.placeholder.com/300x300/111/ff0000?text=Midnight+Drive',
+          streams: 9802,
+          status: 'approved',
+          genre: 'Hip Hop',
+          uploadedAt: new Date().toISOString()
+        },
+        {
+          _id: createId(),
+          title: 'Neon Skyline',
+          artist: 'Pulse Theory',
+          artistId: 'artist-3',
+          duration: 198,
+          audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3',
+          coverUrl: 'https://via.placeholder.com/300x300/111/ff0000?text=Neon+Skyline',
+          streams: 7468,
+          status: 'approved',
+          genre: 'Pop',
+          uploadedAt: new Date().toISOString()
+        }
+      ],
+      artists: [
+        {
+          _id: 'artist-1',
+          name: 'Nova Star',
+          profileImage: 'https://via.placeholder.com/150x150/111/ff0000?text=Nova+Star',
+          followers: 12400,
+          bio: 'Futuristic electronic artist crafting immersive soundscapes.'
+        },
+        {
+          _id: 'artist-2',
+          name: 'Luna Beats',
+          profileImage: 'https://via.placeholder.com/150x150/111/ff0000?text=Luna+Beats',
+          followers: 8700,
+          bio: 'A soulful fusion of hip-hop, R&B and neon rhythms.'
+        },
+        {
+          _id: 'artist-3',
+          name: 'Pulse Theory',
+          profileImage: 'https://via.placeholder.com/150x150/111/ff0000?text=Pulse+Theory',
+          followers: 6200,
+          bio: 'Pop productions for the next generation of listeners.'
+        }
+      ],
+      playlists: [
+        {
+          _id: createId(),
+          name: 'Prime Drops',
+          creatorId: null,
+          songIds: [],
+          description: 'High-energy tracks for your next playlist.',
+          isPublic: true,
+          createdAt: new Date().toISOString()
+        }
+      ],
+      recentPlays: []
+    };
+
+    await fs.writeFile(DATA_FILE, JSON.stringify(defaultData, null, 2), 'utf-8');
+  }
 }
 
-// Multer configuration for music files
-const musicStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, uploadsDir);
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, uniqueSuffix + path.extname(file.originalname));
+async function readData() {
+  try {
+    const raw = await fs.readFile(DATA_FILE, 'utf-8');
+    return JSON.parse(raw);
+  } catch (err) {
+    await ensureDataFile();
+    return readData();
   }
-});
+}
 
-const musicUpload = multer({
-  storage: musicStorage,
-  limits: { fileSize: 100 * 1024 * 1024 }, // 100MB limit
-  fileFilter: (req, file, cb) => {
-    const allowedMimes = ['audio/mpeg', 'audio/wav', 'audio/ogg', 'audio/mp4', 'audio/m4a'];
-    if (allowedMimes.includes(file.mimetype) || file.originalname.match(/\.(mp3|wav|ogg|m4a|flac)$/i)) {
-      cb(null, true);
-    } else {
-      cb(new Error('Invalid file type. Only audio files are allowed.'));
-    }
-  }
-});
+async function writeData(data) {
+  await fs.writeFile(DATA_FILE, JSON.stringify(data, null, 2), 'utf-8');
+}
 
-// Multer configuration for cover art
-const coverStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, coversDir);
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, uniqueSuffix + path.extname(file.originalname));
-  }
-});
+function verifyToken(req, res, next) {
+  const authHeader = req.headers.authorization;
+  const token = authHeader && authHeader.split(' ')[1];
 
-const coverUpload = multer({
-  storage: coverStorage,
-  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit
-  fileFilter: (req, file, cb) => {
-    const allowedMimes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-    if (allowedMimes.includes(file.mimetype) || file.originalname.match(/\.(jpg|jpeg|png|gif|webp)$/i)) {
-      cb(null, true);
-    } else {
-      cb(new Error('Invalid file type. Only image files are allowed.'));
-    }
-  }
-});
-
-// Serve uploaded files
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-
-// ==========================================
-// DATABASE CONNECTION
-// ==========================================
-const mongoURI = process.env.MONGODB_URI || 'mongodb://localhost:27017/dropbox-music';
-let dbConnected = false;
-
-mongoose.connect(mongoURI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  serverSelectionTimeoutMS: 5000,
-  connectTimeoutMS: 10000,
-})
-.then(() => {
-  console.log('✅ MongoDB Connected');
-  dbConnected = true;
-})
-.catch(err => {
-  console.error('⚠️  MongoDB Connection Error:', err.message);
-  console.log('ℹ️  Server will continue without database. Configure MONGODB_URI for persistence.');
-});
-
-// ==========================================
-// DATABASE SCHEMAS
-// ==========================================
-
-// User Schema
-const userSchema = new mongoose.Schema({
-  username: {
-    type: String,
-    required: true,
-    unique: true,
-    minlength: 3
-  },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-    match: /.+\@.+\..+/
-  },
-  password: {
-    type: String,
-    required: true,
-    minlength: 6
-  },
-  accountType: {
-    type: String,
-    enum: ['listener', 'artist', 'admin'],
-    default: 'listener'
-  },
-  profilePic: String,
-  bio: String,
-  followers: [mongoose.Schema.Types.ObjectId],
-  following: [mongoose.Schema.Types.ObjectId],
-  playlists: [mongoose.Schema.Types.ObjectId],
-  favorites: [mongoose.Schema.Types.ObjectId],
-  premiumLevel: {
-    type: String,
-    enum: ['free', 'premium', 'family'],
-    default: 'free'
-  },
-  isVerified: {
-    type: Boolean,
-    default: false
-  },
-  twoFactorEnabled: {
-    type: Boolean,
-    default: false
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now
-  }
-});
-
-// Song Schema
-const songSchema = new mongoose.Schema({
-  title: {
-    type: String,
-    required: true
-  },
-  artist: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
-  },
-  album: String,
-  genre: String,
-  duration: Number,
-  fileUrl: String,
-  coverArt: String,
-  streams: {
-    type: Number,
-    default: 0
-  },
-  likes: {
-    type: Number,
-    default: 0
-  },
-  likedBy: [mongoose.Schema.Types.ObjectId],
-  status: {
-    type: String,
-    enum: ['pending', 'approved', 'rejected'],
-    default: 'pending'
-  },
-  uploadedAt: {
-    type: Date,
-    default: Date.now
-  }
-});
-
-// Playlist Schema
-const playlistSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true
-  },
-  creator: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
-  },
-  songs: [mongoose.Schema.Types.ObjectId],
-  description: String,
-  isPublic: {
-    type: Boolean,
-    default: true
-  },
-  followers: [mongoose.Schema.Types.ObjectId],
-  createdAt: {
-    type: Date,
-    default: Date.now
-  }
-});
-
-// Subscription Schema
-const subscriptionSchema = new mongoose.Schema({
-  user: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
-  },
-  plan: {
-    type: String,
-    enum: ['free', 'premium', 'family'],
-    required: true
-  },
-  amount: Number,
-  status: {
-    type: String,
-    enum: ['active', 'cancelled', 'expired'],
-    default: 'active'
-  },
-  startDate: Date,
-  endDate: Date,
-  paymentMethod: String
-});
-
-// Create Models
-const User = mongoose.model('User', userSchema);
-const Song = mongoose.model('Song', songSchema);
-const Playlist = mongoose.model('Playlist', playlistSchema);
-const Subscription = mongoose.model('Subscription', subscriptionSchema);
-
-// ==========================================
-// AUTHENTICATION MIDDLEWARE
-// ==========================================
-
-const verifyToken = (req, res, next) => {
-  const token = req.headers.authorization?.split(' ')[1];
-  
   if (!token) {
-    return res.status(401).json({ message: 'No token provided' });
+    return res.status(401).json({ message: 'Authorization required' });
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'dropbox-secret');
+    const decoded = jwt.verify(token, JWT_SECRET);
     req.userId = decoded.id;
     next();
   } catch (err) {
-    return res.status(401).json({ message: 'Invalid token' });
+    return res.status(401).json({ message: 'Invalid or expired token' });
   }
-};
-
-// ==========================================
-// AUTH ROUTES
-// ==========================================
-
-// Register
-app.post('/api/auth/register', async (req, res) => {
-  try {
-    const { username, email, password, accountType } = req.body;
-
-    // Validate input
-    if (!username || !email || !password) {
-      return res.status(400).json({ message: 'Missing required fields' });
-    }
-
-    // Check if user exists
-    const existingUser = await User.findOne({ $or: [{ email }, { username }] });
-    if (existingUser) {
-      return res.status(400).json({ message: 'User already exists' });
-    }
-
-    // Hash password
-    const hashedPassword = await bcryptjs.hash(password, 10);
-
-    // Create user
-    const user = new User({
-      username,
-      email,
-      password: hashedPassword,
-      accountType: accountType || 'listener'
-    });
-
-    await user.save();
-
-    // Generate JWT token
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET || 'dropbox-secret', {
-      expiresIn: '7d'
-    });
-
-    res.status(201).json({
-      message: 'User registered successfully',
-      token,
-      user: {
-        id: user._id,
-        username: user.username,
-        email: user.email,
-        accountType: user.accountType
-      }
-    });
-  } catch (err) {
-    res.status(500).json({ message: 'Error registering user', error: err.message });
-  }
-});
-
-// Login
-app.post('/api/auth/login', async (req, res) => {
-  try {
-    const { email, password } = req.body;
-
-    // Validate input
-    if (!email || !password) {
-      return res.status(400).json({ message: 'Email and password required' });
-    }
-
-    // Find user
-    const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(401).json({ message: 'Invalid credentials' });
-    }
-
-    // Check password
-    const isPasswordValid = await bcryptjs.compare(password, user.password);
-    if (!isPasswordValid) {
-      return res.status(401).json({ message: 'Invalid credentials' });
-    }
-
-    // Generate token
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET || 'dropbox-secret', {
-      expiresIn: '7d'
-    });
-
-    res.json({
-      message: 'Login successful',
-      token,
-      user: {
-        id: user._id,
-        username: user.username,
-        email: user.email,
-        accountType: user.accountType
-      }
-    });
-  } catch (err) {
-    res.status(500).json({ message: 'Error logging in', error: err.message });
-  }
-});
-
-// ==========================================
-// SONG ROUTES
-// ==========================================
-
-// Get all songs
-app.get('/api/songs', async (req, res) => {
-  try {
-    const songs = await Song.find({ status: 'approved' })
-      .populate('artist', 'username profilePic')
-      .sort({ uploadedAt: -1 });
-    
-    res.json({ songs });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// Get trending songs
-app.get('/api/songs/trending', async (req, res) => {
-  try {
-    const songs = await Song.find({ status: 'approved' })
-      .sort({ streams: -1 })
-      .limit(10)
-      .populate('artist', 'username profilePic');
-    
-    res.json({ songs });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// File upload endpoint
-app.post('/api/upload', verifyToken, musicUpload.single('audio'), async (req, res) => {
-  try {
-    if (!req.file) {
-      return res.status(400).json({ error: 'No file uploaded' });
-    }
-
-    const fileUrl = `/uploads/music/${req.file.filename}`;
-    
-    res.status(200).json({
-      message: 'File uploaded successfully',
-      fileUrl: fileUrl,
-      fileName: req.file.originalname,
-      fileSize: req.file.size
-    });
-  } catch (err) {
-    res.status(500).json({ error: err.message || 'File upload failed' });
-  }
-});
-
-// Upload song (Artist only)
-app.post('/api/songs/upload', verifyToken, async (req, res) => {
-  try {
-    const { title, album, genre, fileUrl, coverArt } = req.body;
-
-    const song = new Song({
-      title,
-      artist: req.userId,
-      album,
-      genre,
-      fileUrl,
-      coverArt,
-      status: 'pending'
-    });
-
-    await song.save();
-
-    res.status(201).json({
-      message: 'Song uploaded successfully. Awaiting admin approval.',
-      song
-    });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// Like song
-app.post('/api/songs/:songId/like', verifyToken, async (req, res) => {
-  try {
-    const song = await Song.findById(req.params.songId);
-    
-    if (!song.likedBy.includes(req.userId)) {
-      song.likedBy.push(req.userId);
-      song.likes += 1;
-      await song.save();
-    }
-
-    res.json({ message: 'Song liked', likes: song.likes });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// ==========================================
-// PLAYLIST ROUTES
-// ==========================================
-
-// Create playlist
-app.post('/api/playlists', verifyToken, async (req, res) => {
-  try {
-    const { name, description, isPublic } = req.body;
-
-    const playlist = new Playlist({
-      name,
-      description,
-      isPublic: isPublic !== false,
-      creator: req.userId
-    });
-
-    await playlist.save();
-
-    res.status(201).json({
-      message: 'Playlist created successfully',
-      playlist
-    });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// Get user playlists
-app.get('/api/playlists', verifyToken, async (req, res) => {
-  try {
-    const playlists = await Playlist.find({ creator: req.userId })
-      .populate('songs');
-    
-    res.json(playlists);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// Add song to playlist
-app.post('/api/playlists/:playlistId/songs/:songId', verifyToken, async (req, res) => {
-  try {
-    const playlist = await Playlist.findById(req.params.playlistId);
-    
-    if (playlist.creator.toString() !== req.userId) {
-      return res.status(403).json({ message: 'Unauthorized' });
-    }
-
-    if (!playlist.songs.includes(req.params.songId)) {
-      playlist.songs.push(req.params.songId);
-      await playlist.save();
-    }
-
-    res.json({ message: 'Song added to playlist', playlist });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// ==========================================
-// USER ROUTES
-// ==========================================
-
-// Get user profile
-app.get('/api/users/:userId', async (req, res) => {
-  try {
-    const user = await User.findById(req.params.userId)
-      .select('-password')
-      .populate('followers following playlists');
-
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-    
-    res.json({ user });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// Update user profile
-app.put('/api/users/:userId', verifyToken, async (req, res) => {
-  try {
-    if (req.params.userId !== req.userId) {
-      return res.status(403).json({ message: 'Unauthorized' });
-    }
-
-    const { username, bio, profilePic } = req.body;
-
-    const user = await User.findByIdAndUpdate(
-      req.userId,
-      { username, bio, profilePic },
-      { new: true }
-    ).select('-password');
-
-    res.json({ message: 'Profile updated', user });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// Follow user
-app.post('/api/users/:userId/follow', verifyToken, async (req, res) => {
-  try {
-    const targetUser = await User.findById(req.params.userId);
-    const currentUser = await User.findById(req.userId);
-
-    if (!currentUser.following.includes(req.params.userId)) {
-      currentUser.following.push(req.params.userId);
-      targetUser.followers.push(req.userId);
-      
-      await currentUser.save();
-      await targetUser.save();
-    }
-
-    res.json({ message: 'User followed' });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// ==========================================
-// SEARCH ROUTES
-// ==========================================
-
-// Search songs and artists
-app.get('/api/search', async (req, res) => {
-  try {
-    const query = req.query.q || '';
-
-    const songs = await Song.find({
-      $and: [
-        { status: 'approved' },
-        {
-          $or: [
-            { title: { $regex: query, $options: 'i' } },
-            { album: { $regex: query, $options: 'i' } },
-            { genre: { $regex: query, $options: 'i' } }
-          ]
-        }
-      ]
-    }).limit(10);
-
-    const artists = await User.find({
-      $and: [
-        { accountType: 'artist' },
-        { username: { $regex: query, $options: 'i' } }
-      ]
-    }).limit(10).select('-password');
-
-    res.json({ songs, artists });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// ==========================================
-// ADMIN ROUTES
-// ==========================================
-
-// Approve song (Admin only)
-app.post('/api/admin/songs/:songId/approve', verifyToken, async (req, res) => {
-  try {
-    // Check if user is admin
-    const user = await User.findById(req.userId);
-    if (user.accountType !== 'admin') {
-      return res.status(403).json({ message: 'Admin access required' });
-    }
-
-    const song = await Song.findByIdAndUpdate(
-      req.params.songId,
-      { status: 'approved' },
-      { new: true }
-    );
-
-    res.json({ message: 'Song approved', song });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// Get admin dashboard stats
-app.get('/api/admin/stats', verifyToken, async (req, res) => {
-  try {
-    // Verify admin
-    const user = await User.findById(req.userId);
-    if (user.accountType !== 'admin') {
-      return res.status(403).json({ message: 'Admin access required' });
-    }
-
-    const totalUsers = await User.countDocuments();
-    const totalSongs = await Song.countDocuments();
-    const pendingSongs = await Song.countDocuments({ status: 'pending' });
-    const totalStreams = await Song.aggregate([
-      { $group: { _id: null, totalStreams: { $sum: '$streams' } } }
-    ]);
-
-    res.json({
-      totalUsers,
-      totalSongs,
-      pendingSongs,
-      totalStreams: totalStreams[0]?.totalStreams || 0
-    });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// ==========================================
-// SUBSCRIPTION ROUTES
-// ==========================================
-
-// Create subscription
-app.post('/api/subscriptions', verifyToken, async (req, res) => {
-  try {
-    const { plan } = req.body;
-
-    const subscription = new Subscription({
-      user: req.userId,
-      plan,
-      amount: plan === 'premium' ? 9.99 : (plan === 'family' ? 14.99 : 0),
-      startDate: new Date(),
-      endDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // 30 days
-    });
-
-    await subscription.save();
-
-    // Update user's premium level
-    await User.findByIdAndUpdate(req.userId, { premiumLevel: plan });
-
-    res.json({ message: 'Subscription created', subscription });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// ==========================================
-// HEALTH CHECK
-// ==========================================
-
-app.get('/api/health', (req, res) => {
-  res.json({ 
-    message: '✅ DROPBOX MUSIC PLAYER Server is running',
-    timestamp: new Date(),
-    version: '1.0.0'
-  });
-});
-
-app.get('/api-docs', (req, res) => {
-  res.sendFile(path.join(__dirname, 'API_DOCUMENTATION.md'));
-});
-
-// ==========================================
-// SERVE STATIC FILES (Frontend)
-// ==========================================
-
-// Catch-all handler: send back index.html for any non-API routes
-app.get('*', (req, res) => {
-  const publicIndexPath = path.join(__dirname, 'public', 'index.html');
-  const rootIndexPath = path.join(__dirname, 'index.html');
-  
-  // Try public/index.html first, fallback to index.html in root
-  if (fs.existsSync(publicIndexPath)) {
-    res.sendFile(publicIndexPath);
-  } else if (fs.existsSync(rootIndexPath)) {
-    res.sendFile(rootIndexPath);
-  } else {
-    res.status(404).send('Index file not found');
-  }
-});
-
-// ==========================================
-// ERROR HANDLING
-// ==========================================
-
-app.use((err, req, res, next) => {
-  console.error(err);
-  res.status(500).json({ 
-    message: 'Internal server error',
-    error: process.env.NODE_ENV === 'production' ? {} : err.message
-  });
-});
-
-// ==========================================
-// START SERVER
-// ==========================================
-
-const PORT = process.env.PORT || 5000;
-
-const startServer = () => {
-  app.listen(PORT, () => {
-    console.log(`\n🎵 DROPBOX MUSIC PLAYER Backend Server`);
-    console.log(`✅ Server running on http://localhost:${PORT}`);
-    console.log(`📚 API Documentation: http://localhost:${PORT}/api-docs`);
-    console.log(`🔗 Health Check: http://localhost:${PORT}/api/health\n`);
-  }).on('error', (err) => {
-    console.error('❌ Server startup error:', err);
-    process.exit(1);
-  });
-};
-
-// Start the server if not in test mode
-if (require.main === module) {
-  startServer();
 }
 
-module.exports = app;
+function normalizeSong(song) {
+  return {
+    ...song,
+    duration: song.duration || 0,
+    coverUrl: song.coverUrl || 'https://via.placeholder.com/300x300/111/ff0000?text=Now+Playing'
+  };
+}
+
+app.get('/api/songs/trending', async (req, res) => {
+  const data = await readData();
+  const songs = data.songs
+    .filter(song => song.status === 'approved')
+    .sort((a, b) => (b.streams || 0) - (a.streams || 0))
+    .slice(0, 10)
+    .map(normalizeSong);
+  res.json({ songs });
+});
+
+app.get('/api/songs/:songId', async (req, res) => {
+  const data = await readData();
+  const song = data.songs.find(item => item._id === req.params.songId);
+  if (!song) {
+    return res.status(404).json({ message: 'Song not found' });
+  }
+  res.json({ song: normalizeSong(song) });
+});
+
+app.get('/api/artists/featured', async (req, res) => {
+  const data = await readData();
+  res.json({ artists: data.artists });
+});
+
+app.get('/api/search', async (req, res) => {
+  const query = (req.query.q || '').trim().toLowerCase();
+  const data = await readData();
+  if (!query) {
+    return res.json({ results: [] });
+  }
+
+  const results = data.songs.filter(song => {
+    return song.title.toLowerCase().includes(query) ||
+      song.artist.toLowerCase().includes(query) ||
+      (song.genre || '').toLowerCase().includes(query);
+  }).slice(0, 20).map(normalizeSong);
+
+  res.json({ results });
+});
+
+app.get('/api/playlists', verifyToken, async (req, res) => {
+  const data = await readData();
+  const playlists = data.playlists
+    .filter(list => list.creatorId === req.userId || list.isPublic)
+    .map(list => ({
+      _id: list._id,
+      name: list.name,
+      description: list.description,
+      songCount: list.songIds.length,
+      isPublic: list.isPublic
+    }));
+  res.json({ playlists });
+});
+
+app.get('/api/playlists/:playlistId', async (req, res) => {
+  const data = await readData();
+  const playlist = data.playlists.find(item => item._id === req.params.playlistId);
+  if (!playlist) {
+    return res.status(404).json({ message: 'Playlist not found' });
+  }
+
+  const songs = playlist.songIds.map(songId => {
+    const song = data.songs.find(item => item._id === songId);
+    return song ? normalizeSong(song) : null;
+  }).filter(Boolean);
+
+  res.json({ playlist: { ...playlist, songs } });
+});
+
+app.get('/api/user/recently-played', verifyToken, async (req, res) => {
+  const data = await readData();
+  const recentIds = data.recentPlays.slice(-8).reverse();
+  const songs = recentIds
+    .map(id => data.songs.find(song => song._id === id))
+    .filter(Boolean)
+    .map(normalizeSong);
+  res.json({ songs });
+});
+
+app.post('/api/auth/register', async (req, res) => {
+  const { username, email, password, accountType } = req.body;
+  if (!username || !email || !password) {
+    return res.status(400).json({ message: 'Username, email, and password are required' });
+  }
+
+  const data = await readData();
+  const existing = data.users.find(user => user.email.toLowerCase() === email.toLowerCase());
+  if (existing) {
+    return res.status(400).json({ message: 'Email already registered' });
+  }
+
+  const passwordHash = await bcrypt.hash(password, 10);
+  const user = {
+    _id: createId(),
+    username,
+    email,
+    passwordHash,
+    accountType: accountType || 'listener',
+    profileImage: `https://via.placeholder.com/150x150/111/ff0000?text=${encodeURIComponent(username[0].toUpperCase())}`,
+    followers: 0,
+    createdAt: new Date().toISOString()
+  };
+
+  data.users.push(user);
+  await writeData(data);
+
+  res.status(201).json({
+    message: 'User registered successfully',
+    user: {
+      _id: user._id,
+      username: user.username,
+      email: user.email,
+      accountType: user.accountType
+    }
+  });
+});
+
+app.post('/api/auth/login', async (req, res) => {
+  const { email, password } = req.body;
+  const data = await readData();
+  const user = data.users.find(user => user.email.toLowerCase() === (email || '').toLowerCase());
+
+  if (!user || !(await bcrypt.compare(password, user.passwordHash))) {
+    return res.status(401).json({ message: 'Invalid credentials' });
+  }
+
+  const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '7d' });
+
+  res.json({
+    token,
+    user: {
+      _id: user._id,
+      username: user.username,
+      email: user.email,
+      accountType: user.accountType
+    }
+  });
+});
+
+app.post('/api/upload', verifyToken, upload.single('audio'), async (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ message: 'No file uploaded' });
+  }
+
+  const fileUrl = `/uploads/${req.file.filename}`;
+  res.json({ fileUrl });
+});
+
+app.post('/api/songs/upload', verifyToken, async (req, res) => {
+  const { title, album, genre, fileUrl, coverUrl } = req.body;
+  if (!title || !fileUrl) {
+    return res.status(400).json({ message: 'Song title and file URL are required' });
+  }
+
+  const data = await readData();
+  const artist = data.users.find(user => user._id === req.userId);
+
+  const song = {
+    _id: createId(),
+    title,
+    artist: artist ? artist.username : 'Uploaded Artist',
+    artistId: req.userId,
+    album: album || 'Single',
+    genre: genre || 'Various',
+    duration: 0,
+    audioUrl: fileUrl,
+    coverUrl: coverUrl || 'https://via.placeholder.com/300x300/111/ff0000?text=Uploaded',
+    streams: 0,
+    status: 'approved',
+    uploadedAt: new Date().toISOString()
+  };
+
+  data.songs.unshift(song);
+  await writeData(data);
+
+  res.status(201).json({ song: normalizeSong(song) });
+});
+
+app.post('/api/playlists', verifyToken, async (req, res) => {
+  const { name, songIds = [], description, isPublic } = req.body;
+  if (!name) {
+    return res.status(400).json({ message: 'Playlist name is required' });
+  }
+
+  const data = await readData();
+  const playlist = {
+    _id: createId(),
+    name,
+    creatorId: req.userId,
+    songIds,
+    description: description || '',
+    isPublic: isPublic !== false,
+    createdAt: new Date().toISOString()
+  };
+
+  data.playlists.push(playlist);
+  await writeData(data);
+
+  res.status(201).json({ playlist });
+});
+
+app.use((req, res, next) => {
+  if (req.path.startsWith('/api/')) {
+    return res.status(404).json({ message: 'API route not found' });
+  }
+  next();
+});
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+(async () => {
+  try {
+    await fs.mkdir(UPLOADS_DIR, { recursive: true });
+    await ensureDataFile();
+    app.listen(PORT, () => {
+      console.log(`✅ Dropbox Music Player backend running on http://localhost:${PORT}`);
+    });
+  } catch (err) {
+    console.error('Startup error:', err);
+    process.exit(1);
+  }
+})();

@@ -1,0 +1,90 @@
+{
+  "users": [
+    {
+      "_id": "c5713fa1-6d17-46dd-9916-1d330427e4c6",
+      "username": "demoartist",
+      "email": "artist@dropboxmusic.com",
+      "passwordHash": "$2a$10$o7tgIB0bOwe.2muEGCP2q.//mqDEmgeahkO2l03N7yqSADg4E7BR6",
+      "accountType": "artist",
+      "profileImage": "https://via.placeholder.com/150x150/111/ff0a0a?text=Artist",
+      "followers": 3240,
+      "createdAt": "2026-05-06T14:41:55.899Z"
+    }
+  ],
+  "songs": [
+    {
+      "_id": "988388ef-a3f3-4815-bfe9-cc84176ed142",
+      "title": "Electric Horizon",
+      "artist": "Nova Star",
+      "artistId": "artist-1",
+      "duration": 212,
+      "audioUrl": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+      "coverUrl": "https://via.placeholder.com/300x300/111/ff0000?text=Electric+Horizon",
+      "streams": 12894,
+      "status": "approved",
+      "genre": "Electronic",
+      "uploadedAt": "2026-05-06T14:41:55.901Z"
+    },
+    {
+      "_id": "cd50855c-a7fd-468c-b6fa-5eb2b9f11568",
+      "title": "Midnight Drive",
+      "artist": "Luna Beats",
+      "artistId": "artist-2",
+      "duration": 245,
+      "audioUrl": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
+      "coverUrl": "https://via.placeholder.com/300x300/111/ff0000?text=Midnight+Drive",
+      "streams": 9802,
+      "status": "approved",
+      "genre": "Hip Hop",
+      "uploadedAt": "2026-05-06T14:41:55.901Z"
+    },
+    {
+      "_id": "4948fc9d-e32c-413c-862a-dde6f21610d4",
+      "title": "Neon Skyline",
+      "artist": "Pulse Theory",
+      "artistId": "artist-3",
+      "duration": 198,
+      "audioUrl": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",
+      "coverUrl": "https://via.placeholder.com/300x300/111/ff0000?text=Neon+Skyline",
+      "streams": 7468,
+      "status": "approved",
+      "genre": "Pop",
+      "uploadedAt": "2026-05-06T14:41:55.901Z"
+    }
+  ],
+  "artists": [
+    {
+      "_id": "artist-1",
+      "name": "Nova Star",
+      "profileImage": "https://via.placeholder.com/150x150/111/ff0000?text=Nova+Star",
+      "followers": 12400,
+      "bio": "Futuristic electronic artist crafting immersive soundscapes."
+    },
+    {
+      "_id": "artist-2",
+      "name": "Luna Beats",
+      "profileImage": "https://via.placeholder.com/150x150/111/ff0000?text=Luna+Beats",
+      "followers": 8700,
+      "bio": "A soulful fusion of hip-hop, R&B and neon rhythms."
+    },
+    {
+      "_id": "artist-3",
+      "name": "Pulse Theory",
+      "profileImage": "https://via.placeholder.com/150x150/111/ff0000?text=Pulse+Theory",
+      "followers": 6200,
+      "bio": "Pop productions for the next generation of listeners."
+    }
+  ],
+  "playlists": [
+    {
+      "_id": "26c9fb5f-73ba-4199-98ac-3edbeaa4076d",
+      "name": "Prime Drops",
+      "creatorId": null,
+      "songIds": [],
+      "description": "High-energy tracks for your next playlist.",
+      "isPublic": true,
+      "createdAt": "2026-05-06T14:41:55.901Z"
+    }
+  ],
+  "recentPlays": []
+}

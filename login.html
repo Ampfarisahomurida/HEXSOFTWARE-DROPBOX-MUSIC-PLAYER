@@ -34,7 +34,7 @@
                 </div>
                 <button type="submit" class="auth-btn">Login</button>
             </form>
-            <p class="auth-switch">Don't have an account? <a href="register.html">Register</a></p>
+            <p class="auth-switch">Don't have an account? <a href="Register">Register</a></p>
             <div class="social-login">
                 <p>Or login with</p>
                 <div class="social-buttons">
@@ -52,37 +52,17 @@
     </div>
 
     <script>
-        const API_BASE = window.location.hostname === 'localhost' ? 'http://localhost:5000/api' : '/api';
-
-        document.querySelector('.auth-form').addEventListener('submit', async function(e) {
+        // Simple form validation
+        document.querySelector('.auth-form').addEventListener('submit', function(e) {
             e.preventDefault();
-            const email = this.querySelector('input[type="email"]').value.trim();
-            const password = this.querySelector('input[type="password"]').value.trim();
+            const email = this.querySelector('input[type="email"]').value;
+            const password = this.querySelector('input[type="password"]').value;
 
-            if (!email || !password) {
-                alert('Please fill in both email and password');
-                return;
-            }
-
-            try {
-                const response = await fetch(`${API_BASE}/auth/login`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ email, password })
-                });
-
-                const data = await response.json();
-                if (!response.ok) {
-                    throw new Error(data.message || 'Login failed');
-                }
-
-                localStorage.setItem('authToken', data.token);
-                localStorage.setItem('currentUser', JSON.stringify(data.user));
-                window.location.href = 'index.html';
-            } catch (error) {
-                alert(error.message || 'Unable to log in at this time');
+            if (email && password) {
+                alert('Login functionality would connect to backend here');
+                // In a real app, this would send a request to the server
+            } else {
+                alert('Please fill in all fields');
             }
         });
     </script>
