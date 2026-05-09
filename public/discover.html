@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discover - DROPBOX MUSIC PLAYER</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="logo" onclick="window.location.href='index.html'">
+            <i class='bx bx-music'></i>
+            DROPBOX MUSIC PLAYER
+        </div>
+        <div class="search-bar">
+            <input type="text" placeholder="Search songs, artists, genres..." id="searchInput">
+            <button title="Search"><i class='bx bx-search'></i></button>
+        </div>
+        <div class="user-actions">
+            <button class="login-btn" onclick="window.location.href='login.html'">Login</button>
+            <button class="register-btn" onclick="window.location.href='register.html'">Register</button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <nav class="nav-menu">
+                <a href="index.html" class="nav-item"><i class='bx bx-home'></i> Home</a>
+                <a href="discover.html" class="nav-item active"><i class='bx bx-search'></i> Discover</a>
+                <a href="playlists.html" class="nav-item"><i class='bx bx-list-ul'></i> Playlists</a>
+                <a href="artist-profile.html" class="nav-item"><i class='bx bx-user'></i> Artist Hub</a>
+                <a href="user-profile.html" class="nav-item"><i class='bx bx-user-circle'></i> Profile</a>
+                <a href="settings.html" class="nav-item"><i class='bx bx-cog'></i> Settings</a>
+            </nav>
+        </aside>
+
+        <!-- Content Area -->
+        <section class="content">
+            <div class="discover-header">
+                <h1>Discover New Music</h1>
+                <p>Explore trending songs, playlists, and artists</p>
+            </div>
+
+            <!-- Genres Section -->
+            <div class="section">
+                <h2>Browse by Genre</h2>
+                <div class="genre-grid">
+                    <div class="genre-card" onclick="filterByGenre('pop')">
+                        <i class='bx bx-star'></i>
+                        <h3>Pop</h3>
+                    </div>
+                    <div class="genre-card" onclick="filterByGenre('rock')">
+                        <i class='bx bx-guitar'></i>
+                        <h3>Rock</h3>
+                    </div>
+                    <div class="genre-card" onclick="filterByGenre('hiphop')">
+                        <i class='bx bx-headphone'></i>
+                        <h3>Hip-Hop</h3>
+                    </div>
+                    <div class="genre-card" onclick="filterByGenre('jazz')">
+                        <i class='bx bx-music'></i>
+                        <h3>Jazz</h3>
+                    </div>
+                    <div class="genre-card" onclick="filterByGenre('electronic')">
+                        <i class='bx bx-radio'></i>
+                        <h3>Electronic</h3>
+                    </div>
+                    <div class="genre-card" onclick="filterByGenre('classical')">
+                        <i class='bx bx-playlist'></i>
+                        <h3>Classical</h3>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Trending Artists -->
+            <div class="section">
+                <h2>🔥 Trending Artists</h2>
+                <div class="artist-grid">
+                    <div class="artist-card">
+                        <img src="https://via.placeholder.com/150x150/333/fff?text=Artist+1" alt="Artist">
+                        <h3>Artist Name 1</h3>
+                        <p>450K followers</p>
+                        <button class="follow-btn">Follow</button>
+                    </div>
+                    <div class="artist-card">
+                        <img src="https://via.placeholder.com/150x150/333/fff?text=Artist+2" alt="Artist">
+                        <h3>Artist Name 2</h3>
+                        <p>320K followers</p>
+                        <button class="follow-btn">Follow</button>
+                    </div>
+                    <div class="artist-card">
+                        <img src="https://via.placeholder.com/150x150/333/fff?text=Artist+3" alt="Artist">
+                        <h3>Artist Name 3</h3>
+                        <p>280K followers</p>
+                        <button class="follow-btn">Follow</button>
+                    </div>
+                    <div class="artist-card">
+                        <img src="https://via.placeholder.com/150x150/333/fff?text=Artist+4" alt="Artist">
+                        <h3>Artist Name 4</h3>
+                        <p>210K followers</p>
+                        <button class="follow-btn">Follow</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recommended Playlists -->
+            <div class="section">
+                <h2>📋 Recommended Playlists</h2>
+                <div class="playlist-cards">
+                    <div class="small-playlist-card">
+                        <img src="https://via.placeholder.com/120x120/333/fff?text=Chill" alt="Playlist">
+                        <h4>Chill Vibes</h4>
+                        <p>45 songs • 2.3M plays</p>
+                    </div>
+                    <div class="small-playlist-card">
+                        <img src="https://via.placeholder.com/120x120/333/fff?text=Workout" alt="Playlist">
+                        <h4>Workout Mix</h4>
+                        <p>52 songs • 1.8M plays</p>
+                    </div>
+                    <div class="small-playlist-card">
+                        <img src="https://via.placeholder.com/120x120/333/fff?text=Study" alt="Playlist">
+                        <h4>Study Focus</h4>
+                        <p>38 songs • 3.1M plays</p>
+                    </div>
+                    <div class="small-playlist-card">
+                        <img src="https://via.placeholder.com/120x120/333/fff?text=Party" alt="Playlist">
+                        <h4>Party Hits</h4>
+                        <p>61 songs • 2.9M plays</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- New Releases -->
+            <div class="section">
+                <h2>🆕 New Releases</h2>
+                <div class="song-grid">
+                    <div class="song-card">
+                        <img src="https://via.placeholder.com/200x200/333/fff?text=Release+1" alt="Song">
+                        <h4>New Song Title 1</h4>
+                        <p>Artist Name</p>
+                        <div class="card-actions">
+                            <button class="play-btn" title="Play song"><i class='bx bx-play'></i></button>
+                            <button class="favorite-btn"><i class='bx bx-heart'></i></button>
+                        </div>
+                    </div>
+                    <div class="song-card">
+                        <img src="https://via.placeholder.com/200x200/333/fff?text=Release+2" alt="Song">
+                        <h4>New Song Title 2</h4>
+                        <p>Artist Name</p>
+                        <div class="card-actions">
+                            <button class="play-btn" title="Play song"><i class='bx bx-play'></i></button>
+                            <button class="favorite-btn"><i class='bx bx-heart'></i></button>
+                        </div>
+                    </div>
+                    <div class="song-card">
+                        <img src="https://via.placeholder.com/200x200/333/fff?text=Release+3" alt="Song">
+                        <h4>New Song Title 3</h4>
+                        <p>Artist Name</p>
+                        <div class="card-actions">
+                            <button class="play-btn" title="Play song"><i class='bx bx-play'></i></button>
+                            <button class="favorite-btn"><i class='bx bx-heart'></i></button>
+                        </div>
+                    </div>
+                    <div class="song-card">
+                        <img src="https://via.placeholder.com/200x200/333/fff?text=Release+4" alt="Song">
+                        <h4>New Song Title 4</h4>
+                        <p>Artist Name</p>
+                        <div class="card-actions">
+                            <button class="play-btn" title="Play song"><i class='bx bx-play'></i></button>
+                            <button class="favorite-btn"><i class='bx bx-heart'></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Music Player -->
+    <div class="music-player">
+        <div class="player-controls">
+            <button class="prev-btn"><i class='bx bx-skip-previous'></i></button>
+            <button class="play-pause-btn" id="playPauseBtn"><i class='bx bx-play'></i></button>
+            <button class="next-btn"><i class='bx bx-skip-next'></i></button>
+        </div>
+        <div class="progress-bar">
+            <div class="progress" id="progress"></div>
+            <div class="time-display">
+                <span id="currentTime">0:00</span>
+                <span id="totalTime">0:00</span>
+            </div>
+        </div>
+        <div class="song-info">
+            <img src="https://via.placeholder.com/50x50/333/fff?text=Now+Playing" alt="Song" id="currentSongImg">
+            <div class="song-details">
+                <h4 id="currentSongTitle">No song playing</h4>
+                <p id="currentSongArtist">Artist</p>
+            </div>
+        </div>
+        <div class="volume-control">
+            <i class='bx bx-volume-full'></i>
+            <input type="range" min="0" max="1" step="0.1" value="0.5" id="volumeSlider">
+        </div>
+    </div>
+
+    <audio id="audioPlayer" preload="metadata"></audio>
+
+    <script src="app.js"></script>
+    <script>
+        function filterByGenre(genre) {
+            alert(`Filter by ${genre} - Backend will handle this`);
+        }
+
+        // Follow button functionality
+        document.querySelectorAll('.follow-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                if (this.textContent === 'Follow') {
+                    this.textContent = 'Following';
+                    this.style.background = '#ff0000';
+                } else {
+                    this.textContent = 'Follow';
+                    this.style.background = '#333';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

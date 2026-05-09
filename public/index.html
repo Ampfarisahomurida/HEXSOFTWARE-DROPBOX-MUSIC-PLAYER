@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="DROPBOX MUSIC PLAYER - Stream millions of songs, discover new artists, and create your perfect playlists.">
+    <meta name="keywords" content="music, streaming, player, songs, artists, playlists">
+    <title>DROPBOX MUSIC PLAYER - Stream Music Online</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎵</text></svg>">
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loadingScreen" class="loading-screen">
+        <div class="loading-content">
+            <i class='bx bx-music loading-icon'></i>
+            <h2>Loading DROPBOX MUSIC PLAYER...</h2>
+            <div class="loading-bar">
+                <div class="loading-progress"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="logo">
+            <i class='bx bx-music'></i>
+            <span>DROPBOX MUSIC</span>
+        </div>
+        <nav class="main-nav">
+            <a href="#home" class="nav-link active" data-page="home">Home</a>
+            <a href="#discover" class="nav-link" data-page="discover">Discover</a>
+            <a href="#playlists" class="nav-link" data-page="playlists">Playlists</a>
+            <a href="#artist-profile" class="nav-link" data-page="artist-profile">Upload</a>
+        </nav>
+        <div class="search-bar">
+            <input type="text" placeholder="Search songs, artists, albums..." id="searchInput" autocomplete="off">
+            <button type="button" title="Search" id="searchBtn">
+                <i class='bx bx-search'></i>
+            </button>
+            <div id="searchResults" class="search-results"></div>
+        </div>
+        <div class="user-actions" id="userActions">
+            <!-- Will be populated by JavaScript -->
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <nav class="nav-menu">
+                <a href="#home" class="nav-item active" data-page="home">
+                    <i class='bx bx-home'></i>
+                    <span>Home</span>
+                </a>
+                <a href="#discover" class="nav-item" data-page="discover">
+                    <i class='bx bx-search'></i>
+                    <span>Discover</span>
+                </a>
+                <a href="#playlists" class="nav-item" data-page="playlists">
+                    <i class='bx bx-list-ul'></i>
+                    <span>Playlists</span>
+                </a>
+                <a href="#favorites" class="nav-item" data-page="favorites">
+                    <i class='bx bx-heart'></i>
+                    <span>Favorites</span>
+                </a>
+                <a href="#artist-profile" class="nav-item" data-page="artist-profile">
+                    <i class='bx bx-upload'></i>
+                    <span>Upload</span>
+                </a>
+                <a href="#user-profile" class="nav-item" data-page="user-profile">
+                    <i class='bx bx-user'></i>
+                    <span>Profile</span>
+                </a>
+                <a href="#settings" class="nav-item" data-page="settings">
+                    <i class='bx bx-cog'></i>
+                    <span>Settings</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-section">
+                <h3>Your Playlists</h3>
+                <div id="userPlaylists" class="playlist-list">
+                    <!-- Will be populated by JavaScript -->
+                </div>
+                <button id="createPlaylistBtn" class="create-playlist-btn">
+                    <i class='bx bx-plus'></i>
+                    Create Playlist
+                </button>
+            </div>
+
+            <div class="sidebar-section">
+                <h3>Recently Played</h3>
+                <div id="recentlyPlayed" class="recent-list">
+                    <!-- Will be populated by JavaScript -->
+                </div>
+            </div>
+        </aside>
+
+        <!-- Content Area -->
+        <section class="content">
+            <!-- Home Page -->
+            <div id="homePage" class="page active">
+                <div class="hero-section">
+                    <div class="hero-content">
+                        <h1>Welcome to DROPBOX MUSIC PLAYER</h1>
+                        <p>Stream millions of songs, discover new artists, and create your perfect playlists.</p>
+                        <div class="hero-actions">
+                            <button class="cta-btn primary" id="exploreBtn">
+                                <i class='bx bx-play-circle'></i>
+                                Start Listening
+                            </button>
+                            <button class="cta-btn secondary" id="uploadBtn">
+                                <i class='bx bx-upload'></i>
+                                Upload Music
+                            </button>
+                        </div>
+                    </div>
+                    <div class="hero-image">
+                        <i class='bx bx-music hero-music-icon'></i>
+                    </div>
+                </div>
+
+                <div class="trending-section">
+                    <div class="section-header">
+                        <h2><i class='bx bx-trending-up'></i> Trending Now</h2>
+                        <button class="see-all-btn" data-section="trending">See All</button>
+                    </div>
+                    <div id="trendingSongs" class="song-grid">
+                        <!-- Will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <div class="featured-section">
+                    <div class="section-header">
+                        <h2><i class='bx bx-star'></i> Featured Artists</h2>
+                        <button class="see-all-btn" data-section="artists">See All</button>
+                    </div>
+                    <div id="featuredArtists" class="artist-grid">
+                        <!-- Will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <div class="recent-section">
+                    <div class="section-header">
+                        <h2><i class='bx bx-time-five'></i> Recently Added</h2>
+                        <button class="see-all-btn" data-section="recent">See All</button>
+                    </div>
+                    <div id="recentSongs" class="song-grid">
+                        <!-- Will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Discover Page -->
+            <div id="discoverPage" class="page">
+                <div class="discover-header">
+                    <h1>Discover New Music</h1>
+                    <p>Explore genres, moods, and find your next favorite song</p>
+                </div>
+
+                <div class="genre-section">
+                    <h2>Browse by Genre</h2>
+                    <div class="genre-grid">
+                        <div class="genre-card" data-genre="pop">
+                            <i class='bx bx-music'></i>
+                            <span>Pop</span>
+                        </div>
+                        <div class="genre-card" data-genre="rock">
+                            <i class='bx bx-guitar-amp'></i>
+                            <span>Rock</span>
+                        </div>
+                        <div class="genre-card" data-genre="hip-hop">
+                            <i class='bx bx-microphone'></i>
+                            <span>Hip Hop</span>
+                        </div>
+                        <div class="genre-card" data-genre="electronic">
+                            <i class='bx bx-pulse'></i>
+                            <span>Electronic</span>
+                        </div>
+                        <div class="genre-card" data-genre="jazz">
+                            <i class='bx bx-saxophone'></i>
+                            <span>Jazz</span>
+                        </div>
+                        <div class="genre-card" data-genre="classical">
+                            <i class='bx bx-violin'></i>
+                            <span>Classical</span>
+                        </div>
+                        <div class="genre-card" data-genre="country">
+                            <i class='bx bx-home-heart'></i>
+                            <span>Country</span>
+                        </div>
+                        <div class="genre-card" data-genre="rnb">
+                            <i class='bx bx-heart-circle'></i>
+                            <span>R&B</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mood-section">
+                    <h2>Mood & Activity</h2>
+                    <div class="mood-grid">
+                        <div class="mood-card" data-mood="workout">
+                            <i class='bx bx-dumbbell'></i>
+                            <span>Workout</span>
+                        </div>
+                        <div class="mood-card" data-mood="chill">
+                            <i class='bx bx-coffee'></i>
+                            <span>Chill</span>
+                        </div>
+                        <div class="mood-card" data-mood="party">
+                            <i class='bx bx-party'></i>
+                            <span>Party</span>
+                        </div>
+                        <div class="mood-card" data-mood="focus">
+                            <i class='bx bx-brain'></i>
+                            <span>Focus</span>
+                        </div>
+                        <div class="mood-card" data-mood="romantic">
+                            <i class='bx bx-heart'></i>
+                            <span>Romantic</span>
+                        </div>
+                        <div class="mood-card" data-mood="sleep">
+                            <i class='bx bx-moon'></i>
+                            <span>Sleep</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Upload Section (for artists) -->
+            <div id="uploadSection" class="upload-section">
+                <div class="upload-header">
+                    <h2><i class='bx bx-upload'></i> Upload Your Music</h2>
+                    <p>Share your music with the world. Upload tracks for approval.</p>
+                </div>
+
+                <div class="upload-area">
+                    <div class="upload-drop-zone" id="uploadDropZone">
+                        <i class='bx bx-cloud-upload upload-icon'></i>
+                        <h3>Drag & drop your music files here</h3>
+                        <p>or <span class="upload-link">browse files</span></p>
+                        <p class="upload-info">Supported formats: MP3, WAV, FLAC, M4A, AAC (Max 50MB)</p>
+                        <input type="file" id="fileInput" accept="audio/*" multiple title="Choose audio files to upload" aria-label="Choose audio files to upload">
+                    </div>
+
+                    <div id="uploadQueue" class="upload-queue">
+                        <!-- Upload progress will appear here -->
+                    </div>
+                </div>
+
+                <div class="upload-guidelines">
+                    <h3>Upload Guidelines</h3>
+                    <ul>
+                        <li>Ensure you own the rights to the music you're uploading</li>
+                        <li>Use high-quality audio files (320kbps MP3 or better)</li>
+                        <li>Include accurate artist and song information</li>
+                        <li>Uploads will be reviewed before going live</li>
+                        <li>Approved tracks will be available to all users</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Music Player -->
+    <div class="music-player" id="musicPlayer">
+        <div class="player-main">
+            <div class="now-playing">
+                <img id="currentSongImg" src="https://via.placeholder.com/60x60/333/fff?text=🎵" alt="Current Song">
+                <div class="song-details">
+                    <h4 id="currentSongTitle">No song playing</h4>
+                    <p id="currentSongArtist">Select a song to start listening</p>
+                </div>
+                <button class="like-btn" id="likeBtn" title="Like song">
+                    <i class='bx bx-heart'></i>
+                </button>
+            </div>
+
+            <div class="player-controls">
+                <button class="control-btn shuffle-btn" id="shuffleBtn" title="Shuffle">
+                    <i class='bx bx-shuffle'></i>
+                </button>
+                <button class="control-btn prev-btn" id="prevBtn" title="Previous">
+                    <i class='bx bx-skip-previous'></i>
+                </button>
+                <button class="control-btn play-pause-btn" id="playPauseBtn" title="Play/Pause">
+                    <i class='bx bx-play'></i>
+                </button>
+                <button class="control-btn next-btn" id="nextBtn" title="Next">
+                    <i class='bx bx-skip-next'></i>
+                </button>
+                <button class="control-btn repeat-btn" id="repeatBtn" title="Repeat">
+                    <i class='bx bx-repeat'></i>
+                </button>
+            </div>
+
+            <div class="progress-section">
+                <span id="currentTime" class="time-display">0:00</span>
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress" id="progress"></div>
+                    </div>
+                </div>
+                <span id="totalTime" class="time-display">0:00</span>
+            </div>
+        </div>
+
+        <div class="player-extra">
+            <div class="volume-control">
+                    <button class="volume-btn" id="volumeBtn" title="Toggle mute/unmute">
+                        <i class='bx bx-volume-full'></i>
+                    </button>
+                    <div class="volume-slider-container">
+                        <input type="range" min="0" max="1" step="0.01" value="0.7" id="volumeSlider" class="volume-slider" title="Volume control" aria-label="Volume control">
+
+            <div class="playlist-btn">
+                <button id="playlistToggleBtn" title="Toggle playlist">
+                    <i class='bx bx-list-ul'></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Playlist Panel (Collapsible) -->
+    <div class="playlist-panel" id="playlistPanel">
+        <div class="playlist-header">
+            <h3>Current Playlist</h3>
+            <button class="close-playlist" id="closePlaylistBtn" title="Close playlist panel">
+                <i class='bx bx-x'></i>
+            </button>
+        </div>
+        <div id="currentPlaylist" class="current-playlist">
+            <!-- Current playlist will appear here -->
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Login to DROPBOX MUSIC</h2>
+                <button class="modal-close" data-modal="loginModal" title="Close login modal">
+                    <i class='bx bx-x'></i>
+                </button>
+            </div>
+            <form id="loginForm" class="auth-form">
+                <div class="form-group">
+                    <label for="loginEmail">Email</label>
+                    <input type="email" id="loginEmail" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" name="password" required>
+                </div>
+                <button type="submit" class="auth-submit-btn">Login</button>
+                <div class="auth-links">
+                    <a href="#" id="forgotPasswordLink">Forgot password?</a>
+                    <span>Don't have an account? <a href="#" id="showRegisterLink">Sign up</a></span>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="registerModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Join DROPBOX MUSIC</h2>
+                <button class="modal-close" data-modal="registerModal" title="Close registration modal">
+                    <i class='bx bx-x'></i>
+                </button>
+            </div>
+            <form id="registerForm" class="auth-form">
+                <div class="form-group">
+                    <label for="registerUsername">Username</label>
+                    <input type="text" id="registerUsername" name="username" required minlength="3">
+                </div>
+                <div class="form-group">
+                    <label for="registerEmail">Email</label>
+                    <input type="email" id="registerEmail" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerPassword">Password</label>
+                    <input type="password" id="registerPassword" name="password" required minlength="6">
+                </div>
+                <div class="form-group">
+                    <label for="accountType">Account Type</label>
+                    <select id="accountType" name="accountType" required>
+                        <option value="listener">Listener</option>
+                        <option value="artist">Artist</option>
+                    </select>
+                </div>
+                <button type="submit" class="auth-submit-btn">Create Account</button>
+                <div class="auth-links">
+                    <span>Already have an account? <a href="#" id="showLoginLink">Login</a></span>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Notifications -->
+    <div id="notificationContainer" class="notification-container">
+        <!-- Notifications will appear here -->
+    </div>
+
+    <!-- Audio Element (Hidden) -->
+    <audio id="audioPlayer" preload="metadata"></audio>
+
+    <!-- Scripts -->
+    <script src="app.js"></script>
+</body>
+</html>
+ 

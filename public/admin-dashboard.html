@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - DROPBOX MUSIC PLAYER</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="logo" onclick="window.location.href='index.html'">
+            <i class='bx bx-music'></i>
+            ADMIN - DROPBOX MUSIC PLAYER
+        </div>
+        <div class="search-bar">
+            <input type="text" placeholder="Search..." id="searchInput">
+            <button><i class='bx bx-search'></i></button>
+        </div>
+        <div class="user-actions">
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <nav class="nav-menu">
+                <a href="#" onclick="switchAdminTab('dashboard')" class="nav-item active"><i class='bx bx-dashboard'></i> Dashboard</a>
+                <a href="#" onclick="switchAdminTab('users')" class="nav-item"><i class='bx bx-user'></i> Users</a>
+                <a href="#" onclick="switchAdminTab('songs')" class="nav-item"><i class='bx bx-music'></i> Songs</a>
+                <a href="#" onclick="switchAdminTab('artists')" class="nav-item"><i class='bx bx-user-circle'></i> Artists</a>
+                <a href="#" onclick="switchAdminTab('reports')" class="nav-item"><i class='bx bx-file'></i> Reports</a>
+                <a href="#" onclick="switchAdminTab('monetization')" class="nav-item"><i class='bx bx-money'></i> Monetization</a>
+                <a href="#" onclick="switchAdminTab('settings')" class="nav-item"><i class='bx bx-cog'></i> Settings</a>
+            </nav>
+        </aside>
+
+        <!-- Content Area -->
+        <section class="content">
+            <!-- Dashboard Tab -->
+            <div class="admin-tab active" id="dashboard-tab">
+                <h1>Admin Dashboard</h1>
+                <div class="admin-stats">
+                    <div class="stat-card">
+                        <i class='bx bx-user'></i>
+                        <h3>45,234</h3>
+                        <p>Total Users</p>
+                    </div>
+                    <div class="stat-card">
+                        <i class='bx bx-music'></i>
+                        <h3>128,456</h3>
+                        <p>Total Songs</p>
+                    </div>
+                    <div class="stat-card">
+                        <i class='bx bx-headphone'></i>
+                        <h3>2.4M</h3>
+                        <p>Total Streams</p>
+                    </div>
+                    <div class="stat-card">
+                        <i class='bx bx-dollar'></i>
+                        <h3>$24,567</h3>
+                        <p>Revenue This Month</p>
+                    </div>
+                </div>
+
+                <div class="admin-charts" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem;">
+                    <div class="chart-card">
+                        <h3>User Growth</h3>
+                        <p style="text-align: center; padding: 2rem; color: #aaa;">Chart visualization</p>
+                    </div>
+                    <div class="chart-card">
+                        <h3>Revenue Trends</h3>
+                        <p style="text-align: center; padding: 2rem; color: #aaa;">Chart visualization</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Users Tab -->
+            <div class="admin-tab" id="users-tab">
+                <h1>User Management</h1>
+                <div style="margin-bottom: 1rem;">
+                    <input type="text" placeholder="Search users..." style="padding: 0.75rem; width: 300px;">
+                    <button style="margin-left: 0.5rem; padding: 0.75rem 1.5rem; background: #ff0000; color: #fff; border-radius: 5px;">Search</button>
+                </div>
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>User ID</th>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Joined</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>#12345</td>
+                            <td>john_doe</td>
+                            <td>john@example.com</td>
+                            <td>2025-01-15</td>
+                            <td><span class="badge active">Active</span></td>
+                            <td>
+                                <button class="action-btn" title="View"><i class='bx bx-eye'></i></button>
+                                <button class="action-btn" title="Edit"><i class='bx bx-edit'></i></button>
+                                <button class="action-btn warning" title="Suspend"><i class='bx bx-power-off'></i></button>
+                                <button class="action-btn danger" title="Delete"><i class='bx bx-trash'></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>#12346</td>
+                            <td>jane_smith</td>
+                            <td>jane@example.com</td>
+                            <td>2025-02-10</td>
+                            <td><span class="badge active">Active</span></td>
+                            <td>
+                                <button class="action-btn" title="View"><i class='bx bx-eye'></i></button>
+                                <button class="action-btn" title="Edit"><i class='bx bx-edit'></i></button>
+                                <button class="action-btn warning" title="Suspend"><i class='bx bx-power-off'></i></button>
+                                <button class="action-btn danger" title="Delete"><i class='bx bx-trash'></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Songs Tab -->
+            <div class="admin-tab" id="songs-tab">
+                <h1>Song Management</h1>
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Song ID</th>
+                            <th>Title</th>
+                            <th>Artist</th>
+                            <th>Status</th>
+                            <th>Streams</th>
+                            <th>Uploaded</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>#SG001</td>
+                            <td>Amazing Song</td>
+                            <td>Artist Name</td>
+                            <td><span class="badge success">Approved</span></td>
+                            <td>12,456</td>
+                            <td>2025-03-20</td>
+                            <td>
+                                <button class="action-btn" title="View"><i class='bx bx-eye'></i></button>
+                                <button class="action-btn warning" title="Flag"><i class='bx bx-flag'></i></button>
+                                <button class="action-btn danger" title="Delete"><i class='bx bx-trash'></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>#SG002</td>
+                            <td>Pending Review</td>
+                            <td>New Artist</td>
+                            <td><span class="badge pending">Pending</span></td>
+                            <td>0</td>
+                            <td>2025-04-25</td>
+                            <td>
+                                <button class="action-btn" title="Approve"><i class='bx bx-check'></i></button>
+                                <button class="action-btn danger" title="Reject"><i class='bx bx-x'></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Artists Tab -->
+            <div class="admin-tab" id="artists-tab">
+                <h1>Artist Management</h1>
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Artist ID</th>
+                            <th>Artist Name</th>
+                            <th>Songs</th>
+                            <th>Followers</th>
+                            <th>Verified</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>#AR001</td>
+                            <td>The Weeknd</td>
+                            <td>45</td>
+                            <td>2.4M</td>
+                            <td><span class="badge success">✓ Verified</span></td>
+                            <td>
+                                <button class="action-btn" title="Profile"><i class='bx bx-user'></i></button>
+                                <button class="action-btn" title="Manage"><i class='bx bx-cog'></i></button>
+                                <button class="action-btn danger" title="Suspend"><i class='bx bx-power-off'></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>#AR002</td>
+                            <td>New Producer</td>
+                            <td>5</td>
+                            <td>234</td>
+                            <td><span class="badge">Not Verified</span></td>
+                            <td>
+                                <button class="action-btn success" title="Verify"><i class='bx bx-check'></i></button>
+                                <button class="action-btn" title="Manage"><i class='bx bx-cog'></i></button>
+                                <button class="action-btn danger" title="Reject"><i class='bx bx-x'></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Reports Tab -->
+            <div class="admin-tab" id="reports-tab">
+                <h1>Content Reports</h1>
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Report ID</th>
+                            <th>Reported Content</th>
+                            <th>Reason</th>
+                            <th>Reported By</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>#RP001</td>
+                            <td>Song: "Banned Song"</td>
+                            <td>Copyright Violation</td>
+                            <td>User #123</td>
+                            <td><span class="badge pending">Pending</span></td>
+                            <td>
+                                <button class="action-btn success" title="Approve"><i class='bx bx-check'></i></button>
+                                <button class="action-btn danger" title="Deny"><i class='bx bx-x'></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Monetization Tab -->
+            <div class="admin-tab" id="monetization-tab">
+                <h1>Monetization Management</h1>
+                <div class="admin-stats">
+                    <div class="stat-card">
+                        <i class='bx bx-dollar'></i>
+                        <h3>$24,567</h3>
+                        <p>Revenue (This Month)</p>
+                    </div>
+                    <div class="stat-card">
+                        <i class='bx bx-list'></i>
+                        <h3>1,234</h3>
+                        <p>Active Subscriptions</p>
+                    </div>
+                    <div class="stat-card">
+                        <i class='bx bx-trending-up'></i>
+                        <h3>15.3%</h3>
+                        <p>Growth (Month-over-Month)</p>
+                    </div>
+                </div>
+
+                <h2>Subscription Plans</h2>
+                <div class="plans-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 1rem;">
+                    <div class="card" style="padding: 1.5rem; background: #111; border-radius: 10px;">
+                        <h3>Free Plan</h3>
+                        <p class="price" style="font-size: 1.5rem; color: #ff0000;">$0/month</p>
+                        <button style="width: 100%; padding: 0.75rem; background: #333; color: #fff; border-radius: 5px; margin-top: 1rem;">Edit</button>
+                    </div>
+                    <div class="card" style="padding: 1.5rem; background: #111; border-radius: 10px;">
+                        <h3>Premium Plan</h3>
+                        <p class="price" style="font-size: 1.5rem; color: #ff0000;">$9.99/month</p>
+                        <button style="width: 100%; padding: 0.75rem; background: #ff0000; color: #fff; border-radius: 5px; margin-top: 1rem;">Edit</button>
+                    </div>
+                    <div class="card" style="padding: 1.5rem; background: #111; border-radius: 10px;">
+                        <h3>Family Plan</h3>
+                        <p class="price" style="font-size: 1.5rem; color: #ff0000;">$14.99/month</p>
+                        <button style="width: 100%; padding: 0.75rem; background: #333; color: #fff; border-radius: 5px; margin-top: 1rem;">Edit</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Tab -->
+            <div class="admin-tab" id="settings-tab">
+                <h1>Admin Settings</h1>
+                <div class="settings-section">
+                    <h2>Platform Configuration</h2>
+                    <div class="setting-item">
+                        <label>Platform Name</label>
+                        <input type="text" value="DROPBOX MUSIC PLAYER">
+                    </div>
+                    <div class="setting-item">
+                        <label>Maintenance Mode</label>
+                        <label class="toggle">
+                            <input type="checkbox">
+                            <span></span>
+                        </label>
+                    </div>
+                    <button class="save-btn" style="margin-top: 1rem;">Save Settings</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        function switchAdminTab(tabName) {
+            document.querySelectorAll('.admin-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+
+            document.getElementById(tabName + '-tab').classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function logout() {
+            alert('Admin logged out. Backend will handle session cleanup.');
+            window.location.href = 'index.html';
+        }
+    </script>
+
+    <style>
+        .admin-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #111;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 1rem;
+        }
+
+        .admin-table th {
+            background: #222;
+            padding: 1rem;
+            text-align: left;
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .admin-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #333;
+            color: #ccc;
+        }
+
+        .admin-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            background: #333;
+            color: #aaa;
+        }
+
+        .badge.active, .badge.success {
+            background: #0f7938;
+            color: #fff;
+        }
+
+        .badge.pending {
+            background: #ff6b00;
+            color: #fff;
+        }
+
+        .action-btn {
+            background: #333;
+            border: none;
+            color: #fff;
+            padding: 0.5rem;
+            margin: 0 0.2rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .action-btn:hover {
+            background: #ff0000;
+        }
+
+        .action-btn.danger {
+            color: #ff6b6b;
+        }
+
+        .action-btn.warning {
+            color: #ffa500;
+        }
+
+        .action-btn.success {
+            color: #0f7938;
+        }
+    </style>
+</body>
+</html>

@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Playlists - DROPBOX MUSIC PLAYER</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="logo" onclick="window.location.href='index.html'">
+            <i class='bx bx-music'></i>
+            DROPBOX MUSIC PLAYER
+        </div>
+        <div class="search-bar">
+            <input type="text" placeholder="Search playlists..." id="searchInput">
+            <button><i class='bx bx-search'></i></button>
+        </div>
+        <div class="user-actions">
+            <button class="login-btn" onclick="window.location.href='login.html'">Login</button>
+            <button class="register-btn" onclick="window.location.href='register.html'">Register</button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <nav class="nav-menu">
+                <a href="index.html" class="nav-item"><i class='bx bx-home'></i> Home</a>
+                <a href="discover.html" class="nav-item"><i class='bx bx-search'></i> Discover</a>
+                <a href="playlists.html" class="nav-item active"><i class='bx bx-list-ul'></i> Playlists</a>
+                <a href="artist-profile.html" class="nav-item"><i class='bx bx-user'></i> Artist Hub</a>
+                <a href="user-profile.html" class="nav-item"><i class='bx bx-user-circle'></i> Profile</a>
+                <a href="settings.html" class="nav-item"><i class='bx bx-cog'></i> Settings</a>
+            </nav>
+        </aside>
+
+        <!-- Content Area -->
+        <section class="content">
+            <div class="playlists-header">
+                <h1>Your Playlists</h1>
+                <button class="create-btn" onclick="createNewPlaylist()">
+                    <i class='bx bx-plus'></i> Create Playlist
+                </button>
+            </div>
+
+            <!-- Liked Songs -->
+            <div class="playlist-section">
+                <div class="playlist-large">
+                    <img src="https://via.placeholder.com/200x200/ff0000/fff?text=Liked+Songs" alt="Liked">
+                    <div class="playlist-info">
+                        <h3><i class='bx bxs-heart'></i> Liked Songs</h3>
+                        <p>Your favorite tracks from DROPBOX</p>
+                        <p class="song-count">245 songs</p>
+                        <button class="play-now-btn">
+                            <i class='bx bx-play'></i> Play
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- User Playlists -->
+            <div class="section">
+                <h2>Your Playlists</h2>
+                <div class="playlist-grid">
+                    <div class="playlist-card" onclick="openPlaylist('chill-vibes')">
+                        <img src="https://via.placeholder.com/150x150/333/999?text=Chill+Vibes" alt="Playlist">
+                        <h4>Chill Vibes</h4>
+                        <p>45 songs</p>
+                        <button class="menu-btn"><i class='bx bx-dots-vertical'></i></button>
+                    </div>
+                    <div class="playlist-card" onclick="openPlaylist('workout-mix')">
+                        <img src="https://via.placeholder.com/150x150/333/999?text=Workout+Mix" alt="Playlist">
+                        <h4>Workout Mix</h4>
+                        <p>52 songs</p>
+                        <button class="menu-btn"><i class='bx bx-dots-vertical'></i></button>
+                    </div>
+                    <div class="playlist-card" onclick="openPlaylist('study-focus')">
+                        <img src="https://via.placeholder.com/150x150/333/999?text=Study+Focus" alt="Playlist">
+                        <h4>Study Focus</h4>
+                        <p>38 songs</p>
+                        <button class="menu-btn"><i class='bx bx-dots-vertical'></i></button>
+                    </div>
+                    <div class="playlist-card" onclick="openPlaylist('party-hits')">
+                        <img src="https://via.placeholder.com/150x150/333/999?text=Party+Hits" alt="Playlist">
+                        <h4>Party Hits</h4>
+                        <p>61 songs</p>
+                        <button class="menu-btn"><i class='bx bx-dots-vertical'></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Followed Playlists -->
+            <div class="section">
+                <h2>Followed Playlists</h2>
+                <div class="playlist-grid">
+                    <div class="playlist-card">
+                        <img src="https://via.placeholder.com/150x150/333/999?text=Top+50+Global" alt="Playlist">
+                        <h4>Top 50 Global</h4>
+                        <p>Official • 50 songs</p>
+                    </div>
+                    <div class="playlist-card">
+                        <img src="https://via.placeholder.com/150x150/333/999?text=New+Music+Daily" alt="Playlist">
+                        <h4>New Music Daily</h4>
+                        <p>Official • 75 songs</p>
+                    </div>
+                    <div class="playlist-card">
+                        <img src="https://via.placeholder.com/150x150/333/999?text=Best+of+2024" alt="Playlist">
+                        <h4>Best of 2024</h4>
+                        <p>Official • 100 songs</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Playlist Details Modal (Hidden by default) -->
+            <div class="modal" id="playlistModal">
+                <div class="modal-content">
+                    <span class="close">&times;</span>
+                    <h2 id="playlistTitle">Playlist Name</h2>
+                    <div class="song-list">
+                        <div class="song-item">
+                            <span>1. Song Title 1 - Artist Name</span>
+                            <div class="song-actions">
+                                <button><i class='bx bx-play-circle'></i></button>
+                                <button><i class='bx bx-trash'></i></button>
+                            </div>
+                        </div>
+                        <div class="song-item">
+                            <span>2. Song Title 2 - Artist Name</span>
+                            <div class="song-actions">
+                                <button><i class='bx bx-play-circle'></i></button>
+                                <button><i class='bx bx-trash'></i></button>
+                            </div>
+                        </div>
+                        <div class="song-item">
+                            <span>3. Song Title 3 - Artist Name</span>
+                            <div class="song-actions">
+                                <button><i class='bx bx-play-circle'></i></button>
+                                <button><i class='bx bx-trash'></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Music Player -->
+    <div class="music-player">
+        <div class="player-controls">
+            <button class="prev-btn"><i class='bx bx-skip-previous'></i></button>
+            <button class="play-pause-btn" id="playPauseBtn"><i class='bx bx-play'></i></button>
+            <button class="next-btn"><i class='bx bx-skip-next'></i></button>
+        </div>
+        <div class="progress-bar">
+            <div class="progress" id="progress"></div>
+            <div class="time-display">
+                <span id="currentTime">0:00</span>
+                <span id="totalTime">0:00</span>
+            </div>
+        </div>
+        <div class="song-info">
+            <img src="https://via.placeholder.com/50x50/333/fff?text=Now+Playing" alt="Song" id="currentSongImg">
+            <div class="song-details">
+                <h4 id="currentSongTitle">No song playing</h4>
+                <p id="currentSongArtist">Artist</p>
+            </div>
+        </div>
+        <div class="volume-control">
+            <i class='bx bx-volume-full'></i>
+            <input type="range" min="0" max="1" step="0.1" value="0.5" id="volumeSlider">
+        </div>
+    </div>
+
+    <audio id="audioPlayer" preload="metadata"></audio>
+
+    <script src="app.js"></script>
+    <script>
+        const modal = document.getElementById('playlistModal');
+        const closeBtn = modal.querySelector('.close');
+
+        function createNewPlaylist() {
+            const playlistName = prompt('Enter playlist name:');
+            if (playlistName) {
+                alert(`Playlist "${playlistName}" created! Backend will save this.`);
+            }
+        }
+
+        function openPlaylist(playlistId) {
+            document.getElementById('playlistTitle').textContent = 'Playlist Songs';
+            modal.style.display = 'block';
+        }
+
+        closeBtn.onclick = function() {
+            modal.style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>
